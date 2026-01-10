@@ -80,7 +80,30 @@ input:focus {
     box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.1);
 }
 
-/* 6. Login Knap */
+/* 6. Messages */
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c62828;
+    font-size: 14px;
+    text-align: left;
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2e7d32;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* 7. Login Knap */
 button {
     width: 100%;
     padding: 14px;
