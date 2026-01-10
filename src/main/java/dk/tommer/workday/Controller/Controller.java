@@ -12,13 +12,12 @@ public class Controller {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/create-user")
-    @ResponseBody
-    public String createUserTest(){
-        userService.createUser("mo", "momo004@gmail.com", "123" , Role.ADMIN);
-        return "bruger oprettet";
-    }
-
+//    @GetMapping("/create-user")
+//    @ResponseBody
+//    public String createUserTest(){
+//        userService.createUser("mo", "momo004@gmail.com", "123" , Role.ADMIN);
+//        return "bruger oprettet";
+//    }
 
     @GetMapping("/login")
     public String login(){
@@ -32,7 +31,7 @@ public class Controller {
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(){
-        return "admin.dashboard";
+        return "admin-dashboard";
     }
 
     @GetMapping("/user/dashboard")

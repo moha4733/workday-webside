@@ -3,6 +3,7 @@ package dk.tommer.workday.Controller;
 import dk.tommer.workday.Entity.Role;
 import dk.tommer.workday.Entity.User;
 import dk.tommer.workday.Repo.UserRepository;
+import dk.tommer.workday.Service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +16,12 @@ public class RegistrationController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder,UserService userService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
 
@@ -35,9 +38,8 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Role.USER);
-        userRepository.save(user);
-        return "redirect:/login";
+        // Her kalder vi servicen i stedet for at gøre alt arbejdet i controlleren
+        userService.createUser(user.getName(), user.getEmail(), user.getPassword(), Role.ROLE_USER);
+        return "redirect:/login?success";
     }
 }

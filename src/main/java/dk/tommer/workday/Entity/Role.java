@@ -1,6 +1,6 @@
 package dk.tommer.workday.Entity;
 
 public enum Role {
-    ADMIN,
-    USER
+    ROLE_ADMIN,
+    ROLE_USER
 }

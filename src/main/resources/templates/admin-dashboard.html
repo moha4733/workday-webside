@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a href="#" class="active">Oversigt</a></li>
+      <li><a href="#">Projekter</a></li>
+      <li><a href="#">Medarbejdere</a></li>
+      <li><a href="#">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Admin Dashboard</h1>
+      <p>Velkommen tilbage, Mester!</p>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Aktive Projekter</h3>
+        <span class="number">12</span>
+      </div>
+      <div class="stat-card">
+        <h3>Nye Forespørgsler</h3>
+        <span class="number">5</span>
+      </div>
+      <div class="stat-card">
+        <h3>Timer i dag</h3>
+        <span class="number">34</span>
+      </div>
+    </div>
+
+    <section class="table-section">
+      <h2>Seneste Opgaver</h2>
+      <table>
+        <thead>
+        <tr>
+          <th>Kunde</th>
+          <th>Opgave</th>
+          <th>Status</th>
+          <th>Handling</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Jensen & Co.</td>
+          <td>Nyt tag (300 m2)</td>
+          <td><span class="status progress">I gang</span></td>
+          <td><a href="#" class="btn-small">Se mere</a></td>
+        </tr>
+        <tr>
+          <td>Lars Nielsen</td>
+          <td>Carport montering</td>
+          <td><span class="status pending">Venter</span></td>
+          <td><a href="#" class="btn-small">Se mere</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>
