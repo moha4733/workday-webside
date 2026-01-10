@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Medarbejdere | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/admin/projects}">Projekter</a></li>
+      <li><a href="#" class="active">Medarbejdere</a></li>
+      <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Medarbejdere</h1>
+    </header>
+
+    <div th:if="${success}" class="success-message" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+      <p th:text="${success}"></p>
+    </div>
+
+    <section class="table-section">
+      <table>
+        <thead>
+        <tr>
+          <th>Navn</th>
+          <th>Email</th>
+          <th>Rolle</th>
+          <th>Arbejdstimer</th>
+          <th>Handlinger</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${employees.isEmpty()}">
+          <td colspan="5" style="text-align: center; padding: 20px;">
+            Ingen medarbejdere endnu.
+          </td>
+        </tr>
+        <tr th:each="employee : ${employees}">
+          <td th:text="${employee.name}"></td>
+          <td th:text="${employee.email}"></td>
+          <td>
+            <span class="status" th:text="${#strings.replace(employee.role.name(), '_', ' ')}"></span>
+          </td>
+          <td th:text="${#numbers.formatDecimal(employee.workHours, 1, 1)} + ' timer'">0 timer</td>
+          <td>
+            <a th:href="@{/admin/employees/{id}/edit-hours(id=${employee.id})}" class="btn-small" style="background-color: #2196F3;">Rediger timer</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Indstillinger | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <style>
+    .settings-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .settings-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .settings-section h2 {
+      color: #8b5e3c;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .work-types-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .work-type-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .work-type-item strong {
+      color: #8b5e3c;
+    }
+    .work-type-item form {
+      display: inline;
+    }
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/admin/projects}">Projekter</a></li>
+      <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+      <li><a href="#" class="active">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Indstillinger</h1>
+    </header>
+
+    <div th:if="${success}" class="alert alert-success">
+      <p th:text="${success}"></p>
+    </div>
+    <div th:if="${error}" class="alert alert-error">
+      <p th:text="${error}"></p>
+    </div>
+
+    <div class="settings-container">
+      <!-- Brugerprofil -->
+      <section class="settings-section">
+        <h2>Brugerprofil</h2>
+        <form th:action="@{/admin/settings/profile}" method="post">
+          <div class="form-group">
+            <label for="name">Navn</label>
+            <input type="text" id="name" name="name" th:value="${user.name}" required/>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:value="${user.email}" required/>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn-primary">Gem ændringer</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Sikkerhed -->
+      <section class="settings-section">
+        <h2>Sikkerhed</h2>
+        <form th:action="@{/admin/settings/change-password}" method="post">
+          <div class="form-group">
+            <label for="oldPassword">Gammelt password</label>
+            <input type="password" id="oldPassword" name="oldPassword" required/>
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Nyt password</label>
+            <input type="password" id="newPassword" name="newPassword" required minlength="6"/>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Bekræft nyt password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6"/>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn-primary">Skift password</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Virksomhedsinfo -->
+      <section class="settings-section">
+        <h2>Virksomhedsinfo</h2>
+        <form th:action="@{/admin/settings/company}" method="post">
+          <div class="form-group">
+            <label for="companyName">Virksomhedsnavn</label>
+            <input type="text" id="companyName" name="companyName" th:value="${company.companyName}"/>
+          </div>
+          <div class="form-group">
+            <label for="cvrNumber">CVR-nummer</label>
+            <input type="text" id="cvrNumber" name="cvrNumber" th:value="${company.cvrNumber}"/>
+          </div>
+          <div class="form-group">
+            <label for="standardHourlyRate">Standard timetakst (kr/time)</label>
+            <input type="number" id="standardHourlyRate" name="standardHourlyRate" 
+                   th:value="${company.standardHourlyRate}" step="0.01" min="0"/>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn-primary">Gem virksomhedsinfo</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Projekt-indstillinger -->
+      <section class="settings-section">
+        <h2>Projekt-indstillinger</h2>
+        <h3 style="margin-bottom: 15px; color: #636e72; font-size: 16px;">Arbejdstyper</h3>
+        
+        <form th:action="@{/admin/settings/work-types/add}" method="post" style="margin-bottom: 20px;">
+          <div class="form-group">
+            <label for="workTypeName">Tilføj ny arbejdstype</label>
+            <input type="text" id="workTypeName" name="name" placeholder="F.eks. Tag, Gulv, Køkken" required/>
+          </div>
+          <div class="form-group">
+            <label for="workTypeDescription">Beskrivelse (valgfrit)</label>
+            <textarea id="workTypeDescription" name="description" placeholder="Beskrivelse af arbejdstypen..."></textarea>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn-primary">Tilføj arbejdstype</button>
+          </div>
+        </form>
+
+        <div th:if="${workTypes.isEmpty()}" style="padding: 20px; text-align: center; color: #636e72;">
+          Ingen arbejdstyper endnu. Tilføj din første arbejdstype ovenfor.
+        </div>
+
+        <div class="work-types-list" th:if="${!workTypes.isEmpty()}">
+          <div class="work-type-item" th:each="workType : ${workTypes}">
+            <div>
+              <strong th:text="${workType.name}"></strong>
+              <p th:if="${workType.description}" th:text="${workType.description}" 
+                 style="margin: 5px 0 0 0; color: #636e72; font-size: 12px;"></p>
+            </div>
+            <form th:action="@{/admin/settings/work-types/{id}/delete(id=${workType.id})}" method="post">
+              <button type="submit" class="btn-small" style="background-color: #f44336;"
+                      onclick="return confirm('Er du sikker på at du vil slette denne arbejdstype?')">Slet</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>
+

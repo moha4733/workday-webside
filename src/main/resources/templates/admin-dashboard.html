@@ -11,9 +11,9 @@
     <h2>Workday</h2>
     <ul>
       <li><a href="#" class="active">Oversigt</a></li>
-      <li><a href="#">Projekter</a></li>
-      <li><a href="#">Medarbejdere</a></li>
-      <li><a href="#">Indstillinger</a></li>
+      <li><a th:href="@{/admin/projects}">Projekter</a></li>
+      <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+      <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
       <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
     </ul>
   </nav>
@@ -27,41 +27,47 @@
     <div class="stats-grid">
       <div class="stat-card">
         <h3>Aktive Projekter</h3>
-        <span class="number">12</span>
+        <span class="number" th:text="${activeProjectsCount}">0</span>
       </div>
       <div class="stat-card">
-        <h3>Nye Forespørgsler</h3>
-        <span class="number">5</span>
+        <h3>Totale Projekter</h3>
+        <span class="number" th:text="${totalProjectsCount}">0</span>
       </div>
       <div class="stat-card">
         <h3>Timer i dag</h3>
-        <span class="number">34</span>
+        <span class="number" th:text="${totalHoursToday}">0</span>
       </div>
     </div>
 
     <section class="table-section">
-      <h2>Seneste Opgaver</h2>
+      <h2>Seneste Projekter</h2>
       <table>
         <thead>
         <tr>
-          <th>Kunde</th>
-          <th>Opgave</th>
+          <th>Projektnavn</th>
+          <th>Beskrivelse</th>
           <th>Status</th>
+          <th>Tildelt til</th>
           <th>Handling</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>Jensen & Co.</td>
-          <td>Nyt tag (300 m2)</td>
-          <td><span class="status progress">I gang</span></td>
-          <td><a href="#" class="btn-small">Se mere</a></td>
+        <tr th:if="${recentProjects.isEmpty()}">
+          <td colspan="5" style="text-align: center; padding: 20px;">
+            Ingen projekter endnu. <a th:href="@{/admin/projects/create}">Opret dit første projekt</a>
+          </td>
         </tr>
-        <tr>
-          <td>Lars Nielsen</td>
-          <td>Carport montering</td>
-          <td><span class="status pending">Venter</span></td>
-          <td><a href="#" class="btn-small">Se mere</a></td>
+        <tr th:each="project : ${recentProjects}">
+          <td th:text="${project.name}"></td>
+          <td th:text="${project.description ?: 'Ingen beskrivelse'}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
+          <td>
+            <span class="status" th:classappend="${project.status.name() == 'IN_PROGRESS' ? 'progress' : 
+                                                      project.status.name() == 'FINISHED' ? 'finished' : 
+                                                      project.status.name() == 'ON_HOLD' ? 'pending' : 'planned'}"
+                  th:text="${#strings.replace(project.status.name(), '_', ' ')}"></span>
+          </td>
+          <td th:text="${project.assignedUser?.name ?: 'Ikke tildelt'}"></td>
+          <td><a th:href="@{/admin/projects/{id}/edit(id=${project.id})}" class="btn-small">Se mere</a></td>
         </tr>
         </tbody>
       </table>

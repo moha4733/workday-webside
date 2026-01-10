@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Opret Projekt | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 20px 0;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/admin/projects}" class="active">Projekter</a></li>
+      <li><a href="#">Medarbejdere</a></li>
+      <li><a href="#">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Opret nyt projekt</h1>
+    </header>
+
+    <div class="form-container">
+      <form th:action="@{/admin/projects/create}" method="post" th:object="${project}">
+        <div class="form-group">
+          <label for="name">Projektnavn *</label>
+          <input type="text" id="name" th:field="*{name}" required placeholder="F.eks. Nyt tag på Jensen & Co."/>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Beskrivelse</label>
+          <textarea id="description" th:field="*{description}" placeholder="Beskriv projektet..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Adresse</label>
+          <input type="text" id="address" th:field="*{address}" placeholder="F.eks. Hovedgade 123, 2100 København"/>
+        </div>
+
+        <div class="form-group">
+          <label for="startDate">Startdato</label>
+          <input type="date" id="startDate" th:field="*{startDate}"/>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" th:field="*{status}">
+            <option th:each="status : ${statuses}" 
+                    th:value="${status}" 
+                    th:text="${#strings.replace(status.name(), '_', ' ')}"></option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="workTypeId">Arbejdstype (valgfrit)</label>
+          <select id="workTypeId" name="workTypeId">
+            <option value="">Ingen arbejdstype</option>
+            <option th:each="workType : ${workTypes}" 
+                    th:value="${workType.id}" 
+                    th:text="${workType.name}"></option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="assignedUserId">Tildel til medarbejder (valgfrit)</label>
+          <select id="assignedUserId" name="assignedUserId">
+            <option value="">Ingen tildeling</option>
+            <option th:each="user : ${users}" 
+                    th:value="${user.id}" 
+                    th:text="${user.name + ' (' + user.email + ')'}"></option>
+          </select>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn-primary">Opret projekt</button>
+          <a th:href="@{/admin/projects}" class="btn-secondary" style="text-decoration: none; display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; border-radius: 4px;">Annuller</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+</body>
+</html>
+

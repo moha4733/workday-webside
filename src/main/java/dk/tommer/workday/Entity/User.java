@@ -20,6 +20,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "work_hours", nullable = false)
+    private Double workHours = 0.0;
 
     public String getName() {
         return name;
@@ -59,5 +61,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Double getWorkHours() {
+        return workHours;
+    }
+
+    public void setWorkHours(Double workHours) {
+        this.workHours = workHours;
     }
 }

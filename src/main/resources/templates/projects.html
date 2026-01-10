@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Projekter | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+      <li><a href="#" class="active">Projekter</a></li>
+      <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+      <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Projekter</h1>
+      <a th:href="@{/admin/projects/create}" class="btn-primary">+ Opret nyt projekt</a>
+    </header>
+
+    <div th:if="${success}" class="success-message" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+      <p th:text="${success}"></p>
+    </div>
+
+    <section class="table-section">
+      <table>
+        <thead>
+        <tr>
+          <th>Navn</th>
+          <th>Beskrivelse</th>
+          <th>Adresse</th>
+          <th>Startdato</th>
+          <th>Status</th>
+          <th>Arbejdstype</th>
+          <th>Tildelt til</th>
+          <th>Handlinger</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${projects.isEmpty()}">
+          <td colspan="8" style="text-align: center; padding: 20px;">
+            Ingen projekter endnu. <a th:href="@{/admin/projects/create}">Opret dit første projekt</a>
+          </td>
+        </tr>
+        <tr th:each="project : ${projects}">
+          <td th:text="${project.name}"></td>
+          <td th:text="${project.description ?: 'Ingen beskrivelse'}"></td>
+          <td th:text="${project.address ?: 'Ingen adresse'}"></td>
+          <td th:text="${project.startDate ?: 'Ikke sat'}"></td>
+          <td>
+            <span class="status" th:classappend="${project.status.name() == 'IN_PROGRESS' ? 'progress' : 
+                                                      project.status.name() == 'FINISHED' ? 'finished' : 
+                                                      project.status.name() == 'ON_HOLD' ? 'pending' : 'planned'}"
+                  th:text="${#strings.replace(project.status.name(), '_', ' ')}"></span>
+          </td>
+          <td th:text="${project.workType?.name ?: 'Ingen arbejdstype'}"></td>
+          <td th:text="${project.assignedUser?.name ?: 'Ikke tildelt'}"></td>
+          <td>
+            <a th:href="@{/admin/projects/{id}/edit(id=${project.id})}" class="btn-small">Rediger</a>
+            <a th:href="@{/admin/projects/{id}/assign(id=${project.id})}" class="btn-small" style="background-color: #2196F3;">Tildel</a>
+            <form th:action="@{/admin/projects/{id}/delete(id=${project.id})}" method="post" style="display: inline;">
+              <button type="submit" class="btn-small" style="background-color: #f44336;" 
+                      onclick="return confirm('Er du sikker på at du vil slette dette projekt?')">Slet</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>
+
