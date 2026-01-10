@@ -1,0 +1,127 @@
+/* 1. Global Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    /* Samme mørke gradient som de andre sider */
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 2. Register Container */
+.register-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border-top: 8px solid #8b5e3c; /* Træ-farve accent */
+}
+
+/* 3. Overskrift */
+h2 {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #2d3436;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* 4. Form Styling */
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4a4a4a;
+}
+
+/* 5. Input Felter */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+}
+
+input:focus {
+    border-color: #8b5e3c;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.1);
+}
+
+/* 6. Register Knap */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #8b5e3c;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #724a2f;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* 7. Login Link Styling (Nederst i boksen) */
+.login-link {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    color: #636e72;
+}
+
+.login-link a {
+    color: #8b5e3c;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.login-link a:hover {
+    color: #724a2f;
+    text-decoration: underline;
+}
+
+/* 8. Mobil optimering */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 30px 20px;
+    }
+}

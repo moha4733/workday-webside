@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Velkommen</title>
+    <link rel="stylesheet" th:href="@{/css/welcome.css}">
+</head>
+<body>
+<div class="welcome-container">
+    <h1>Velkommen til Workday!</h1>
+    <div class="button-group">
+        <a th:href="@{/login}">Login</a>
+        <a th:href="@{/register}">Opret en bruger</a>
+    </div>
+</div>
+</body>
+</html>

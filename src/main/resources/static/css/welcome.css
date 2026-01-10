@@ -1,0 +1,94 @@
+/* Global Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Welcome Card Container */
+.welcome-container {
+    background-color: #ffffff;
+    padding: 50px 40px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border-top: 8px solid #8b5e3c;
+    text-align: center;
+}
+
+/* Headline */
+h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #2d3436;
+    font-weight: 700;
+}
+
+p {
+    color: #636e72;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Buttons (links styled som knapper) */
+.button-group a {
+    display: inline-block;
+    background-color: #8b5e3c;
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect */
+.button-group a:hover {
+    background-color: #724a2f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* En sekundær knap-stil (f.eks. til "Log ud") */
+.button-group a.secondary {
+    background-color: transparent;
+    color: #8b5e3c;
+    border: 2px solid #8b5e3c;
+    box-shadow: none;
+}
+
+.button-group a.secondary:hover {
+    background-color: #fdfbf7;
+    color: #724a2f;
+    border-color: #724a2f;
+}
+
+/* Mobil optimering */
+@media (max-width: 480px) {
+    .welcome-container {
+        padding: 40px 20px;
+    }
+    h1 { font-size: 26px; }
+}
