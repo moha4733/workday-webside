@@ -63,9 +63,11 @@
 
     <div class="form-container">
       <form th:action="@{/admin/projects/create}" method="post" th:object="${project}">
+        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="form-group">
           <label for="name">Projektnavn *</label>
           <input type="text" id="name" th:field="*{name}" required placeholder="F.eks. Nyt tag på Jensen & Co."/>
+          <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:#f44336;font-size:12px;margin-top:6px;"></div>
         </div>
 
         <div class="form-group">
@@ -122,4 +124,3 @@
 </div>
 </body>
 </html>
-

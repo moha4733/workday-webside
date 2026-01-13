@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Svend Bestillinger | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/svend/projects}">Projekter</a></li>
+      <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+      <li><a th:href="@{/svend/orders}" class="active">Bestillinger</a></li>
+      <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Mine Bestillinger</h1>
+      <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
+    </header>
+
+    <section class="table-section">
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Beskrivelse</th>
+          <th>Status</th>
+          <th>Oprettet</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${orders.isEmpty()}">
+          <td colspan="4" style="text-align: center; padding: 20px;">Ingen bestillinger</td>
+        </tr>
+        <tr th:each="mo : ${orders}">
+          <td th:text="${mo.id}"></td>
+          <td th:text="${mo.description ?: ''}"></td>
+          <td><span class="status" th:text="${mo.status}"></span></td>
+          <td th:text="${#temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>

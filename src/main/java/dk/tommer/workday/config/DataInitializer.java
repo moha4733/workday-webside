@@ -1,8 +1,8 @@
-package dk.tommer.workday;
+package dk.tommer.workday.config;
 
-import dk.tommer.workday.Entity.Role;
-import dk.tommer.workday.Entity.User;
-import dk.tommer.workday.Repo.UserRepository;
+import dk.tommer.workday.entity.Role;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,8 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("DataInitializer started - checking for admin user...");
             String adminEmail = "admin@workday.dk";
             String adminPassword = "admin123";
+            String svendEmail = "svend@workday.dk";
+            String svendPassword = "svend123";
 
             // Check if admin user already exists
             if (userRepository.findByEmail(adminEmail).isEmpty()) {
@@ -70,10 +72,18 @@ public class DataInitializer implements CommandLineRunner {
                 }
             }
             logger.info("DataInitializer completed successfully");
+            if (userRepository.findByEmail(svendEmail).isEmpty()) {
+                User svend = new User();
+                svend.setName("Svend Bruger");
+                svend.setEmail(svendEmail);
+                svend.setPassword(passwordEncoder.encode(svendPassword));
+                svend.setRole(Role.SVEND);
+                userRepository.save(svend);
+                logger.info("Svend user created: {} / {}", svendEmail, svendPassword);
+            }
         } catch (Exception e) {
             logger.error("Error in DataInitializer: {}", e.getMessage(), e);
             throw e;
         }
     }
 }
-

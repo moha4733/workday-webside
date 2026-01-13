@@ -1,6 +1,6 @@
-package dk.tommer.workday.Repo;
+package dk.tommer.workday.repository;
 
-import dk.tommer.workday.Entity.User;
+import dk.tommer.workday.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

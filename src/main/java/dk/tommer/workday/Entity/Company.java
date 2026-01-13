@@ -1,4 +1,4 @@
-package dk.tommer.workday.Entity;
+package dk.tommer.workday.entity;
 
 import jakarta.persistence.*;
 

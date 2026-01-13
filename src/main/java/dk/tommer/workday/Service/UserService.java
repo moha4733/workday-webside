@@ -1,8 +1,8 @@
-package dk.tommer.workday.Service;
+package dk.tommer.workday.service;
 
-import dk.tommer.workday.Entity.Role;
-import dk.tommer.workday.Entity.User;
-import dk.tommer.workday.Repo.UserRepository;
+import dk.tommer.workday.entity.Role;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

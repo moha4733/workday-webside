@@ -1,6 +1,6 @@
-package dk.tommer.workday;
+package dk.tommer.workday.config;
 
-import dk.tommer.workday.Repo.UserRepository;
+import dk.tommer.workday.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +28,7 @@ import java.util.Collection;
 
 @Configuration
 @EnableWebSecurity
+@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
@@ -52,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/welcome", "/register", "/login", "/create-admin", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/svend/**").hasRole("SVEND")
+                        .requestMatchers("/api/svend/**", "/api/dashboard/svend").hasRole("SVEND")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -113,10 +116,17 @@ public class SecurityConfig {
                 
                 boolean isAdmin = authorities.stream()
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+                boolean isSvend = authorities.stream()
+                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_SVEND"));
+                boolean isUser = authorities.stream()
+                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"));
                 
                 if (isAdmin) {
                     logger.info("Admin user logged in, redirecting to admin dashboard");
                     response.sendRedirect("/admin/dashboard");
+                } else if (isSvend) {
+                    logger.info("Svend user logged in, redirecting to svend dashboard page");
+                    response.sendRedirect("/svend/dashboard");
                 } else {
                     logger.info("Regular user logged in, redirecting to user dashboard");
                     response.sendRedirect("/user/dashboard");

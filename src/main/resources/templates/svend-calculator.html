@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Svend Beregner | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/svend/projects}">Projekter</a></li>
+      <li><a th:href="@{/svend/calculator}" class="active">Beregner</a></li>
+      <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+      <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Automatisk Materialeberegner</h1>
+      <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
+    </header>
+
+    <section class="table-section">
+      <form th:action="@{/svend/calculator}" method="get" style="margin-bottom: 16px;" id="calcForm">
+        <label>Type:
+          <select name="type" id="calcType" onchange="updateFields()">
+            <option value="floor" th:selected="${type == 'floor'}">Gulv</option>
+            <option value="windows" th:selected="${type == 'windows'}">Vinduer/Lister</option>
+            <option value="insulation" th:selected="${type == 'insulation'}">Gips/Isolering</option>
+            <option value="battens" th:selected="${type == 'battens'}">Lægter</option>
+          </select>
+        </label>
+        <div id="fields-floor">
+          <label>Længde (m): <input type="number" step="0.01" name="length"></label>
+          <label>Bredde (m): <input type="number" step="0.01" name="width"></label>
+          <label>Spild (%) [10 standard]: <input type="number" step="0.1" name="wastePercentage" placeholder="10"></label>
+          <label>Pakke størrelse (m²): <input type="number" step="0.01" name="packageSize"></label>
+        </div>
+        <div id="fields-windows" style="display:none;">
+          <label>Højde (m): <input type="number" step="0.01" name="height"></label>
+          <label>Bredde (m): <input type="number" step="0.01" name="width"></label>
+          <label>Antal vinduer: <input type="number" step="1" name="windowCount"></label>
+          <label>Spild (%) [10 standard]: <input type="number" step="0.1" name="wastePercentage" placeholder="10"></label>
+        </div>
+        <div id="fields-insulation" style="display:none;">
+          <label>Væglængde (m): <input type="number" step="0.01" name="wallLength"></label>
+          <label>Væghøjde (m): <input type="number" step="0.01" name="wallHeight"></label>
+        </div>
+        <div id="fields-battens" style="display:none;">
+          <label>Samlet areal (m²): <input type="number" step="0.01" name="battensArea"></label>
+          <label>Lægteafstand (cm): <input type="number" step="0.1" name="battensSpacingCm" placeholder="30"></label>
+        </div>
+        <button type="submit" class="btn-small">Beregn</button>
+      </form>
+
+      <div th:if="${calc != null}">
+        <div th:switch="${calc.type}">
+          <table th:case="'floor'">
+            <thead>
+            <tr>
+              <th>Netto m²</th>
+              <th>Spild m²</th>
+              <th>Brutto m²</th>
+              <th>Anbefalet antal pakker</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td th:text="${calc.netArea}">0</td>
+              <td th:text="${calc.wasteAmount}">0</td>
+              <td th:text="${calc.grossArea}">0</td>
+              <td th:text="${calc.recommendedOrderQuantity != null ? calc.recommendedOrderQuantity : '-'}">-</td>
+            </tr>
+            </tbody>
+          </table>
+          <table th:case="'windows'">
+            <thead>
+            <tr>
+              <th>Løbende meter (inkl. spild)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td th:text="${calc.linearMeters}">0</td>
+            </tr>
+            </tbody>
+          </table>
+          <table th:case="'insulation'">
+            <thead>
+            <tr>
+              <th>Isolering m²</th>
+              <th>Antal gipsplader (1.2x2.4)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td th:text="${calc.insulationArea}">0</td>
+              <td th:text="${calc.boardCount}">0</td>
+            </tr>
+            </tbody>
+          </table>
+          <table th:case="'battens'">
+            <thead>
+            <tr>
+              <th>Løbende meter lægter</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td th:text="${calc.linearMeters}">0</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <form th:action="@{/svend/material-order}" method="post" style="margin-top: 12px;">
+          <input type="hidden" name="orderDescription"
+                 th:value="${calc.type == 'floor' ? 'Gulvmateriale bestilling: ' + calc.grossArea + ' m2' :
+                            (calc.type == 'windows' ? 'Lister/vinduesindfatninger: ' + calc.linearMeters + ' m' :
+                            (calc.type == 'insulation' ? 'Isolering: ' + calc.insulationArea + ' m2, Gips: ' + calc.boardCount + ' plader' :
+                            'Lægter: ' + calc.linearMeters + ' m'))}">
+          <button type="submit" class="btn-small">Opret materialeanmodning</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+  function updateFields() {
+    var type = document.getElementById('calcType').value;
+    document.getElementById('fields-floor').style.display = (type === 'floor') ? 'block' : 'none';
+    document.getElementById('fields-windows').style.display = (type === 'windows') ? 'block' : 'none';
+    document.getElementById('fields-insulation').style.display = (type === 'insulation') ? 'block' : 'none';
+    document.getElementById('fields-battens').style.display = (type === 'battens') ? 'block' : 'none';
+  }
+  updateFields();
+</script>
+</body>
+</html>

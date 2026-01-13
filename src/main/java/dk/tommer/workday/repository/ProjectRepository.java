@@ -1,7 +1,7 @@
-package dk.tommer.workday.Repo;
+package dk.tommer.workday.repository;
 
-import dk.tommer.workday.Entity.Project;
-import dk.tommer.workday.Entity.ProjectStatus;
+import dk.tommer.workday.entity.Project;
+import dk.tommer.workday.entity.ProjectStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

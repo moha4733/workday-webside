@@ -1,11 +1,11 @@
-package dk.tommer.workday.Controller;
+package dk.tommer.workday.controller;
 
-import dk.tommer.workday.Entity.Company;
-import dk.tommer.workday.Entity.User;
-import dk.tommer.workday.Entity.WorkType;
-import dk.tommer.workday.Repo.CompanyRepository;
-import dk.tommer.workday.Repo.UserRepository;
-import dk.tommer.workday.Repo.WorkTypeRepository;
+import dk.tommer.workday.entity.Company;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.entity.WorkType;
+import dk.tommer.workday.repository.CompanyRepository;
+import dk.tommer.workday.repository.UserRepository;
+import dk.tommer.workday.repository.WorkTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

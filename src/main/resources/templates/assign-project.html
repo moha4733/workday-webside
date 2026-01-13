@@ -74,6 +74,7 @@
       </div>
 
       <form th:action="@{/admin/projects/{id}/assign(id=${project.id})}" method="post">
+        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="form-group">
           <label for="userId">Vælg medarbejder</label>
           <select id="userId" name="userId" required>
@@ -95,4 +96,3 @@
 </div>
 </body>
 </html>
-

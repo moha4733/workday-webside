@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Svend Projekter | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/svend/projects}" class="active">Projekter</a></li>
+      <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+      <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+      <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Mine Projekter</h1>
+      <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
+    </header>
+
+    <section class="table-section">
+      <table>
+        <thead>
+        <tr>
+          <th>Projektnavn</th>
+          <th>Beskrivelse</th>
+          <th>Deadline</th>
+          <th>Handling</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${myProjects.isEmpty()}">
+          <td colspan="4" style="text-align: center; padding: 20px;">Ingen projekter</td>
+        </tr>
+        <tr th:each="project : ${myProjects}">
+          <td th:text="${project.name}"></td>
+          <td th:text="${project.description ?: 'Ingen beskrivelse'}"></td>
+          <td th:text="${project.startDate}"></td>
+          <td>
+            <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>
+            <a href="#" class="btn-small">Tag Billede</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>

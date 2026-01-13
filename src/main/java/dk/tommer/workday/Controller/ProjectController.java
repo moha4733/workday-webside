@@ -1,22 +1,25 @@
-package dk.tommer.workday.Controller;
+package dk.tommer.workday.controller;
 
-import dk.tommer.workday.Entity.Project;
-import dk.tommer.workday.Entity.ProjectStatus;
-import dk.tommer.workday.Entity.User;
-import dk.tommer.workday.Entity.WorkType;
-import dk.tommer.workday.Repo.UserRepository;
-import dk.tommer.workday.Repo.WorkTypeRepository;
-import dk.tommer.workday.Service.ProjectService;
+import dk.tommer.workday.entity.Project;
+import dk.tommer.workday.entity.ProjectStatus;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.entity.WorkType;
+import dk.tommer.workday.repository.UserRepository;
+import dk.tommer.workday.repository.WorkTypeRepository;
+import dk.tommer.workday.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin/projects")
+@org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
 public class ProjectController {
 
     @Autowired
@@ -47,10 +50,16 @@ public class ProjectController {
     }
 
     @PostMapping("/create")
-    public String createProject(@ModelAttribute Project project, 
+    public String createProject(@Valid @ModelAttribute Project project,
+                               Model model,
+                               BindingResult bindingResult,
                                @RequestParam(required = false) Long assignedUserId,
                                @RequestParam(required = false) Long workTypeId,
                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            modelAddFormListsForCreate(model);
+            return "create-project";
+        }
         if (assignedUserId != null) {
             User user = userRepository.findById(assignedUserId)
                     .orElse(null);
@@ -100,10 +109,18 @@ public class ProjectController {
 
     @PostMapping("/{id}/edit")
     public String updateProject(@PathVariable Long id,
-                               @ModelAttribute Project project,
+                               Model model,
+                               @Valid @ModelAttribute Project project,
+                               BindingResult bindingResult,
                                @RequestParam(required = false) Long assignedUserId,
                                @RequestParam(required = false) Long workTypeId,
                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            Project existing = projectService.getProjectById(id)
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            prepareEditModel(model, existing);
+            return "edit-project";
+        }
         Project existingProject = projectService.getProjectById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         
@@ -134,6 +151,23 @@ public class ProjectController {
         return "redirect:/admin/projects";
     }
 
+    private void modelAddFormListsForCreate(Model model) {
+        model.addAttribute("statuses", ProjectStatus.values());
+        List<User> users = userRepository.findAll();
+        List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
+        model.addAttribute("users", users);
+        model.addAttribute("workTypes", workTypes);
+    }
+
+    private void prepareEditModel(Model model, Project project) {
+        model.addAttribute("project", project);
+        model.addAttribute("statuses", ProjectStatus.values());
+        List<User> users = userRepository.findAll();
+        List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
+        model.addAttribute("users", users);
+        model.addAttribute("workTypes", workTypes);
+    }
+
     @PostMapping("/{id}/delete")
     public String deleteProject(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         projectService.deleteProject(id);
@@ -141,4 +175,3 @@ public class ProjectController {
         return "redirect:/admin/projects";
     }
 }
-

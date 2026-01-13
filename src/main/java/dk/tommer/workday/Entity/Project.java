@@ -1,4 +1,4 @@
-package dk.tommer.workday.Entity;
+package dk.tommer.workday.entity;
 
 import java.time.LocalDate;
 
@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "projects")
@@ -22,6 +23,7 @@ public class Project {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String name;
 
     private String description;

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Bestillinger | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/admin/projects}">Projekter</a></li>
+      <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+      <li><a th:href="@{/admin/orders}" class="active">Bestillinger</a></li>
+      <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Materialebestillinger</h1>
+      <p>Godkend eller afvent bestillinger oprettet af svende.</p>
+    </header>
+
+    <section class="table-section">
+      <h2>Afventer Godkendelse</h2>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Beskrivelse</th>
+          <th>Bruger</th>
+          <th>Status</th>
+          <th>Oprettet</th>
+          <th>Handling</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${pendingOrders.isEmpty()}">
+          <td colspan="6" style="text-align: center; padding: 20px;">Ingen afventende bestillinger</td>
+        </tr>
+        <tr th:each="mo : ${pendingOrders}">
+          <td th:text="${mo.id}"></td>
+          <td th:text="${mo.description}"></td>
+          <td th:text="${mo.user != null ? mo.user.email : 'Ukendt'}"></td>
+          <td><span class="status pending" th:text="${mo.status}"></span></td>
+          <td th:text="${#temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+          <td>
+            <form th:action="@{/admin/orders/{id}/approve(id=${mo.id})}" method="post">
+              <button type="submit" class="btn-small">Godkend</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="table-section">
+      <h2>Alle Bestillinger</h2>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Beskrivelse</th>
+          <th>Bruger</th>
+          <th>Status</th>
+          <th>Oprettet</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${allOrders.isEmpty()}">
+          <td colspan="5" style="text-align: center; padding: 20px;">Ingen bestillinger</td>
+        </tr>
+        <tr th:each="mo : ${allOrders}">
+          <td th:text="${mo.id}"></td>
+          <td th:text="${mo.description}"></td>
+          <td th:text="${mo.user != null ? mo.user.email : 'Ukendt'}"></td>
+          <td><span class="status" th:text="${mo.status}"></span></td>
+          <td th:text="${#temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>

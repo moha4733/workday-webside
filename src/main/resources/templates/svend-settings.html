@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Svend Indstillinger | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/svend/projects}">Projekter</a></li>
+      <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+      <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+      <li><a th:href="@{/svend/settings}" class="active">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Indstillinger</h1>
+      <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
+    </header>
+    <section class="table-section">
+      <p>Her kan du senere tilpasse dine visninger og profiler.</p>
+    </section>
+  </main>
+</div>
+</body>
+</html>

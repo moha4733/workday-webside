@@ -1,10 +1,10 @@
-package dk.tommer.workday.Controller;
+package dk.tommer.workday.controller;
 
-import dk.tommer.workday.Entity.Project;
-import dk.tommer.workday.Entity.Role;
-import dk.tommer.workday.Entity.User;
-import dk.tommer.workday.Repo.ProjectRepository;
-import dk.tommer.workday.Repo.UserRepository;
+import dk.tommer.workday.entity.Project;
+import dk.tommer.workday.entity.Role;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.repository.ProjectRepository;
+import dk.tommer.workday.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
