@@ -36,6 +36,9 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private ProjectStatus status = ProjectStatus.PLANNED;
 
+    @Enumerated(EnumType.STRING)
+    private ProjectPriority priority = ProjectPriority.MEDIUM;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User assignedUser;
@@ -105,6 +108,14 @@ public class Project {
 
     public void setStatus(ProjectStatus status) {
         this.status = status;
+    }
+    
+    public ProjectPriority getPriority() {
+        return priority;
+    }
+    
+    public void setPriority(ProjectPriority priority) {
+        this.priority = priority;
     }
 
     public User getAssignedUser() {

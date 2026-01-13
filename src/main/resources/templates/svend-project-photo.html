@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Billede | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <nav class="sidebar">
+    <h2>Workday</h2>
+    <ul>
+      <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+      <li><a th:href="@{/svend/projects}" class="active">Projekter</a></li>
+      <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+      <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+      <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Upload billede til projekt</h1>
+      <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
+    </header>
+
+    <section class="table-section">
+      <div class="form-container">
+        <h2 th:text="${project.name}">Projekt</h2>
+        <form th:action="@{/svend/projects/{id}/photo(id=${project.id})}" method="post" enctype="multipart/form-data">
+          <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <div class="form-group">
+            <label for="image">Vælg billede</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn-primary">Upload</button>
+            <a th:href="@{/svend/projects}" class="btn-secondary" style="text-decoration: none; display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; border-radius: 4px;">Tilbage</a>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

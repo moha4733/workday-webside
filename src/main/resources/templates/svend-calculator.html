@@ -161,15 +161,36 @@
         </div>
 
         <form th:action="@{/svend/material-order}" method="post" style="margin-top: 12px;" class="calc-card">
+          <input type="hidden" name="type" th:value="${calc.type}">
           <input type="hidden" name="orderDescription"
                  th:value="${calc.type == 'floor' ? 'Gulvmateriale bestilling: ' + calc.grossArea + ' m2' :
                             (calc.type == 'windows' ? 'Lister/vinduesindfatninger: ' + calc.linearMeters + ' m' :
                             (calc.type == 'insulation' ? 'Isolering: ' + calc.insulationArea + ' m2, Gips: ' + calc.boardCount + ' plader' :
                             'Lægter: ' + calc.linearMeters + ' m'))}">
-          <div class="calc-grid">
-            <label>Gulvtype / Besked
-              <input type="text" name="floorType" placeholder="fx laminat, parket, egetræ">
-            </label>
+          <div class="calc-grid" th:switch="${calc.type}">
+            <div th:case="'floor'">
+              <label>Gulvtype / Besked
+                <input type="text" name="floorType" placeholder="fx laminat, parket, egetræ">
+              </label>
+            </div>
+            <div th:case="'insulation'">
+              <label>Type isolering
+                <input type="text" name="insulationType" placeholder="fx mineraluld, papiruld">
+              </label>
+              <label>Type gips (valgfrit)
+                <input type="text" name="gypsumType" placeholder="fx 13mm gips, vådrumsgips">
+              </label>
+            </div>
+            <div th:case="'battens'">
+              <label>Lægte dimension/type
+                <input type="text" name="battensType" placeholder="fx 45x95 C24, trykimprægneret">
+              </label>
+            </div>
+            <div th:case="'windows'">
+              <label>Vinduestype/Lister
+                <input type="text" name="windowTrimType" placeholder="fx fyr, MDF, profil A">
+              </label>
+            </div>
             <label>Adresse / Kommentar
               <input type="text" name="addressNote" placeholder="fx Hovedgade 123, København">
             </label>

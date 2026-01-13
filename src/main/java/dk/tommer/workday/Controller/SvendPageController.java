@@ -6,6 +6,7 @@ import dk.tommer.workday.dto.ProjectSummaryDTO;
 import dk.tommer.workday.entity.DayPlan;
 import dk.tommer.workday.entity.MaterialOrder;
 import dk.tommer.workday.entity.Project;
+import dk.tommer.workday.entity.ProjectStatus;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.DayPlanRepository;
@@ -63,7 +64,12 @@ public class SvendPageController {
         ProjectSummaryDTO currentProject = todayPlan
                 .map(DayPlan::getProject)
                 .map(p -> new ProjectSummaryDTO(p.getId(), p.getName(), p.getAddress(), p.getDescription()))
-                .orElse(null);
+                .orElseGet(() -> {
+                    List<Project> assigned = projectRepository.findByAssignedUser_Id(userId);
+                    Project inProgress = assigned.stream().filter(p -> p.getStatus() == ProjectStatus.IN_PROGRESS).findFirst().orElse(null);
+                    Project fallback = inProgress != null ? inProgress : (assigned.isEmpty() ? null : assigned.get(0));
+                    return fallback != null ? new ProjectSummaryDTO(fallback.getId(), fallback.getName(), fallback.getAddress(), fallback.getDescription()) : null;
+                });
 
         List<DayPlanDTO> calendarPreview = dayPlanRepository
                 .findTop5ByUser_IdAndDateGreaterThanEqualOrderByDateAsc(userId, today)
@@ -74,6 +80,15 @@ public class SvendPageController {
                             p != null ? p.getAddress() : null, p != null ? p.getDescription() : null);
                 })
                 .collect(Collectors.toList());
+        if (calendarPreview.isEmpty()) {
+            List<Project> assigned = projectRepository.findByAssignedUser_Id(userId);
+            Project p = assigned.stream().filter(pr -> pr.getStatus() == ProjectStatus.IN_PROGRESS).findFirst().orElse(assigned.isEmpty() ? null : assigned.get(0));
+            if (p != null) {
+                for (int i = 0; i < 5; i++) {
+                    calendarPreview.add(new DayPlanDTO(today.plusDays(i), p.getId(), p.getName(), p.getAddress(), p.getDescription()));
+                }
+            }
+        }
 
         List<MaterialOrderDTO> materialStatus = materialOrderRepository
                 .findTop3ByUser_IdOrderByCreatedAtDesc(userId)
@@ -103,7 +118,12 @@ public class SvendPageController {
     @PostMapping("/material-order")
     public String createMaterialOrder(@RequestParam(required = false) Double grossArea,
                                       @RequestParam(required = false) String orderDescription,
+                                      @RequestParam(required = false) String type,
                                       @RequestParam(required = false) String floorType,
+                                      @RequestParam(required = false) String insulationType,
+                                      @RequestParam(required = false) String gypsumType,
+                                      @RequestParam(required = false) String battensType,
+                                      @RequestParam(required = false) String windowTrimType,
                                       @RequestParam(required = false) String addressNote) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -117,8 +137,26 @@ public class SvendPageController {
             order.setDescription("Materialeanmodning fra SVEND");
         }
         String base = order.getDescription() != null ? order.getDescription() : "";
-        if (floorType != null && !floorType.isBlank()) {
-            base = base + " | Gulvtype: " + floorType.trim();
+        String t = type != null ? type.toLowerCase() : null;
+        if ("floor".equals(t)) {
+            if (floorType != null && !floorType.isBlank()) {
+                base = base + " | Gulvtype: " + floorType.trim();
+            }
+        } else if ("insulation".equals(t)) {
+            if (insulationType != null && !insulationType.isBlank()) {
+                base = base + " | Isoleringstype: " + insulationType.trim();
+            }
+            if (gypsumType != null && !gypsumType.isBlank()) {
+                base = base + " | Gips: " + gypsumType.trim();
+            }
+        } else if ("battens".equals(t)) {
+            if (battensType != null && !battensType.isBlank()) {
+                base = base + " | Lægter: " + battensType.trim();
+            }
+        } else if ("windows".equals(t)) {
+            if (windowTrimType != null && !windowTrimType.isBlank()) {
+                base = base + " | Vinduer/Lister: " + windowTrimType.trim();
+            }
         }
         if (addressNote != null && !addressNote.isBlank()) {
             base = base + " | Adresse: " + addressNote.trim();
@@ -139,6 +177,69 @@ public class SvendPageController {
         return "svend-projects";
     }
 
+    @GetMapping("/projects/{id}/photo")
+    public String showProjectPhoto(@PathVariable Long id, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        Project project = projectRepository.findById(id).orElse(null);
+        if (project == null || project.getAssignedUser() == null || project.getAssignedUser().getId() != user.getId()) {
+            return "redirect:/svend/projects";
+        }
+        model.addAttribute("userName", user.getName());
+        model.addAttribute("project", project);
+        return "svend-project-photo";
+    }
+
+    @PostMapping("/projects/{id}/photo")
+    public String uploadProjectPhoto(@PathVariable Long id,
+                                     @org.springframework.web.bind.annotation.RequestParam("image") org.springframework.web.multipart.MultipartFile image,
+                                     RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        Project project = projectRepository.findById(id).orElse(null);
+        if (project == null || project.getAssignedUser() == null || project.getAssignedUser().getId() != user.getId()) {
+            return "redirect:/svend/projects";
+        }
+        if (image != null && !image.isEmpty()) {
+            try {
+                java.nio.file.Path dir = java.nio.file.Paths.get("uploads", String.valueOf(project.getId()));
+                java.nio.file.Files.createDirectories(dir);
+                String filename = java.time.LocalDateTime.now().toString().replace(":", "-") + "-" + image.getOriginalFilename();
+                java.nio.file.Path target = dir.resolve(filename);
+                image.transferTo(target.toFile());
+                redirectAttributes.addFlashAttribute("success", "Billede uploadet!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Upload fejlede: " + e.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Ingen fil valgt");
+        }
+        return "redirect:/svend/projects";
+    }
+    @PostMapping("/projects/{id}/status")
+    public String updateProjectStatus(@PathVariable Long id,
+                                      @RequestParam String status) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        Project project = projectRepository.findById(id).orElse(null);
+        if (project != null && project.getAssignedUser() != null && project.getAssignedUser().getId() == user.getId()) {
+            ProjectStatus newStatus = null;
+            String s = status != null ? status.toUpperCase() : "";
+            if ("IN_PROGRESS".equals(s) || "STARTET".equalsIgnoreCase(status) || "IGANG".equalsIgnoreCase(status)) {
+                newStatus = ProjectStatus.IN_PROGRESS;
+            } else if ("FINISHED".equals(s) || "FAERDIG".equalsIgnoreCase(status) || "FÆRDIG".equalsIgnoreCase(status)) {
+                newStatus = ProjectStatus.FINISHED;
+            }
+            if (newStatus != null) {
+                project.setStatus(newStatus);
+                projectRepository.save(project);
+            }
+        }
+        return "redirect:/svend/projects";
+    }
     @GetMapping("/projects/{id}/log-hours")
     public String showLogHours(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

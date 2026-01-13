@@ -2,6 +2,7 @@ package dk.tommer.workday.controller;
 
 import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.ProjectStatus;
+import dk.tommer.workday.entity.ProjectPriority;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.entity.WorkType;
 import dk.tommer.workday.repository.UserRepository;
@@ -41,7 +42,7 @@ public class ProjectController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("project", new Project());
-        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("priorities", ProjectPriority.values());
         List<User> users = userRepository.findAll();
         List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
         model.addAttribute("users", users);
@@ -99,7 +100,7 @@ public class ProjectController {
         Project project = projectService.getProjectById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         model.addAttribute("project", project);
-        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("priorities", ProjectPriority.values());
         List<User> users = userRepository.findAll();
         List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
         model.addAttribute("users", users);
@@ -128,7 +129,7 @@ public class ProjectController {
         existingProject.setDescription(project.getDescription());
         existingProject.setAddress(project.getAddress());
         existingProject.setStartDate(project.getStartDate());
-        existingProject.setStatus(project.getStatus());
+        existingProject.setPriority(project.getPriority());
         
         if (assignedUserId != null) {
             User user = userRepository.findById(assignedUserId)
@@ -152,7 +153,7 @@ public class ProjectController {
     }
 
     private void modelAddFormListsForCreate(Model model) {
-        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("priorities", ProjectPriority.values());
         List<User> users = userRepository.findAll();
         List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
         model.addAttribute("users", users);
@@ -161,7 +162,7 @@ public class ProjectController {
 
     private void prepareEditModel(Model model, Project project) {
         model.addAttribute("project", project);
-        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("priorities", ProjectPriority.values());
         List<User> users = userRepository.findAll();
         List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
         model.addAttribute("users", users);
