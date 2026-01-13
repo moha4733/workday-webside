@@ -1,6 +1,7 @@
 package dk.tommer.workday.entity;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +33,9 @@ public class Project {
 
     @Column(name = "start_date")
     private LocalDate startDate;
+    
+    @Column(name = "start_time")
+    private LocalTime startTime;
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus status = ProjectStatus.PLANNED;
@@ -100,6 +104,14 @@ public class Project {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+    
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+    
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
     public ProjectStatus getStatus() {

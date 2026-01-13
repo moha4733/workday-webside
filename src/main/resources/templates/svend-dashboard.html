@@ -23,9 +23,9 @@
     <header>
       <h1>Svend Dashboard</h1>
       <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
-      <div style="margin-top:10px;">
-        <a th:href="@{/svend/dashboard(showCalc=true)}" class="btn-small">Beregn</a>
+      
       </div>
+      
     </header>
 
     <div class="stats-grid">
@@ -64,7 +64,7 @@
           <td th:text="${project.startDate}"></td>
           <td>
             <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>
-            <a href="#" class="btn-small">Tag Billede</a>
+            <a th:if="${currentProject != null}" th:href="@{/svend/projects/{id}/photo(id=${currentProject.id})}" class="btn-small" style="margin-left:6px;">Tag Billede</a>
           </td>
         </tr>
         </tbody>

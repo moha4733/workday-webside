@@ -129,6 +129,7 @@ public class ProjectController {
         existingProject.setDescription(project.getDescription());
         existingProject.setAddress(project.getAddress());
         existingProject.setStartDate(project.getStartDate());
+        existingProject.setStartTime(project.getStartTime());
         existingProject.setPriority(project.getPriority());
         
         if (assignedUserId != null) {
