@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <title>Svend Beregner | Workday</title>
   <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <style>
+    .calc-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 16px; margin-bottom: 16px; }
+    .calc-grid { display: grid; grid-template-columns: repeat(2, minmax(200px, 1fr)); gap: 12px; }
+    .calc-grid label { display: flex; flex-direction: column; font-weight: 600; color: #333; }
+    .calc-grid input, .calc-grid select { margin-top: 6px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .result-table th, .result-table td { border: 1px solid #eee; padding: 10px; text-align: left; }
+    .error { background: #f44336; color: #fff; padding: 10px; border-radius: 4px; margin-bottom: 12px; }
+  </style>
 </head>
 <body>
 <div class="dashboard-wrapper">
@@ -26,41 +35,74 @@
     </header>
 
     <section class="table-section">
-      <form th:action="@{/svend/calculator}" method="get" style="margin-bottom: 16px;" id="calcForm">
-        <label>Type:
-          <select name="type" id="calcType" onchange="updateFields()">
+      <div class="calc-card">
+        <form th:action="@{/svend/calculator}" method="get" id="calcForm">
+          <div class="calc-grid">
+            <label>Type
+              <select name="type" id="calcType" onchange="updateFields()">
             <option value="floor" th:selected="${type == 'floor'}">Gulv</option>
             <option value="windows" th:selected="${type == 'windows'}">Vinduer/Lister</option>
             <option value="insulation" th:selected="${type == 'insulation'}">Gips/Isolering</option>
             <option value="battens" th:selected="${type == 'battens'}">Lægter</option>
-          </select>
-        </label>
-        <div id="fields-floor">
-          <label>Længde (m): <input type="number" step="0.01" name="length"></label>
-          <label>Bredde (m): <input type="number" step="0.01" name="width"></label>
-          <label>Spild (%) [10 standard]: <input type="number" step="0.1" name="wastePercentage" placeholder="10"></label>
-          <label>Pakke størrelse (m²): <input type="number" step="0.01" name="packageSize"></label>
-        </div>
-        <div id="fields-windows" style="display:none;">
-          <label>Højde (m): <input type="number" step="0.01" name="height"></label>
-          <label>Bredde (m): <input type="number" step="0.01" name="width"></label>
-          <label>Antal vinduer: <input type="number" step="1" name="windowCount"></label>
-          <label>Spild (%) [10 standard]: <input type="number" step="0.1" name="wastePercentage" placeholder="10"></label>
-        </div>
-        <div id="fields-insulation" style="display:none;">
-          <label>Væglængde (m): <input type="number" step="0.01" name="wallLength"></label>
-          <label>Væghøjde (m): <input type="number" step="0.01" name="wallHeight"></label>
-        </div>
-        <div id="fields-battens" style="display:none;">
-          <label>Samlet areal (m²): <input type="number" step="0.01" name="battensArea"></label>
-          <label>Lægteafstand (cm): <input type="number" step="0.1" name="battensSpacingCm" placeholder="30"></label>
-        </div>
-        <button type="submit" class="btn-small">Beregn</button>
-      </form>
+              </select>
+            </label>
+            <div id="fields-floor">
+              <label>Længde (m)
+                <input type="number" step="0.01" name="length" placeholder="fx 5.6">
+              </label>
+              <label>Bredde (m)
+                <input type="number" step="0.01" name="width" placeholder="fx 3.2">
+              </label>
+              <label>Spild (%) [10 standard]
+                <input type="number" step="0.1" name="wastePercentage" placeholder="10">
+              </label>
+              <label>Pakke størrelse (m²)
+                <input type="number" step="0.01" name="packageSize" placeholder="fx 2.2">
+              </label>
+            </div>
+            <div id="fields-windows" style="display:none;">
+              <label>Højde (m)
+                <input type="number" step="0.01" name="height" placeholder="fx 1.2">
+              </label>
+              <label>Bredde (m)
+                <input type="number" step="0.01" name="width" placeholder="fx 1.0">
+              </label>
+              <label>Antal vinduer
+                <input type="number" step="1" name="windowCount" placeholder="fx 3">
+              </label>
+              <label>Spild (%) [10 standard]
+                <input type="number" step="0.1" name="wastePercentage" placeholder="10">
+              </label>
+            </div>
+            <div id="fields-insulation" style="display:none;">
+              <label>Væglængde (m)
+                <input type="number" step="0.01" name="wallLength" placeholder="fx 4.0">
+              </label>
+              <label>Væghøjde (m)
+                <input type="number" step="0.01" name="wallHeight" placeholder="fx 2.4">
+              </label>
+            </div>
+            <div id="fields-battens" style="display:none;">
+              <label>Samlet areal (m²)
+                <input type="number" step="0.01" name="battensArea" placeholder="fx 45">
+              </label>
+              <label>Lægteafstand (cm)
+                <input type="number" step="0.1" name="battensSpacingCm" placeholder="30">
+              </label>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <button type="submit" class="btn-small">Beregn</button>
+          </div>
+        </form>
+      </div>
 
+      <div th:if="${calcError}">
+        <div class="error" th:text="${calcError}">Fejl</div>
+      </div>
       <div th:if="${calc != null}">
         <div th:switch="${calc.type}">
-          <table th:case="'floor'">
+          <table th:case="'floor'" class="result-table">
             <thead>
             <tr>
               <th>Netto m²</th>
@@ -78,7 +120,7 @@
             </tr>
             </tbody>
           </table>
-          <table th:case="'windows'">
+          <table th:case="'windows'" class="result-table">
             <thead>
             <tr>
               <th>Løbende meter (inkl. spild)</th>
@@ -90,7 +132,7 @@
             </tr>
             </tbody>
           </table>
-          <table th:case="'insulation'">
+          <table th:case="'insulation'" class="result-table">
             <thead>
             <tr>
               <th>Isolering m²</th>
@@ -104,7 +146,7 @@
             </tr>
             </tbody>
           </table>
-          <table th:case="'battens'">
+          <table th:case="'battens'" class="result-table">
             <thead>
             <tr>
               <th>Løbende meter lægter</th>
@@ -118,12 +160,20 @@
           </table>
         </div>
 
-        <form th:action="@{/svend/material-order}" method="post" style="margin-top: 12px;">
+        <form th:action="@{/svend/material-order}" method="post" style="margin-top: 12px;" class="calc-card">
           <input type="hidden" name="orderDescription"
                  th:value="${calc.type == 'floor' ? 'Gulvmateriale bestilling: ' + calc.grossArea + ' m2' :
                             (calc.type == 'windows' ? 'Lister/vinduesindfatninger: ' + calc.linearMeters + ' m' :
                             (calc.type == 'insulation' ? 'Isolering: ' + calc.insulationArea + ' m2, Gips: ' + calc.boardCount + ' plader' :
                             'Lægter: ' + calc.linearMeters + ' m'))}">
+          <div class="calc-grid">
+            <label>Gulvtype / Besked
+              <input type="text" name="floorType" placeholder="fx laminat, parket, egetræ">
+            </label>
+            <label>Adresse / Kommentar
+              <input type="text" name="addressNote" placeholder="fx Hovedgade 123, København">
+            </label>
+          </div>
           <button type="submit" class="btn-small">Opret materialeanmodning</button>
         </form>
       </div>
@@ -137,6 +187,11 @@
     document.getElementById('fields-windows').style.display = (type === 'windows') ? 'block' : 'none';
     document.getElementById('fields-insulation').style.display = (type === 'insulation') ? 'block' : 'none';
     document.getElementById('fields-battens').style.display = (type === 'battens') ? 'block' : 'none';
+    // Toggle required for visible inputs
+    const allInputs = document.querySelectorAll('#fields-floor input, #fields-windows input, #fields-insulation input, #fields-battens input');
+    allInputs.forEach(i => i.required = false);
+    const visibleInputs = document.querySelectorAll('#fields-' + type + ' input');
+    visibleInputs.forEach(i => i.required = true);
   }
   updateFields();
 </script>

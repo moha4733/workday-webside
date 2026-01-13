@@ -102,7 +102,9 @@ public class SvendPageController {
 
     @PostMapping("/material-order")
     public String createMaterialOrder(@RequestParam(required = false) Double grossArea,
-                                      @RequestParam(required = false) String orderDescription) {
+                                      @RequestParam(required = false) String orderDescription,
+                                      @RequestParam(required = false) String floorType,
+                                      @RequestParam(required = false) String addressNote) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         MaterialOrder order = new MaterialOrder();
@@ -114,6 +116,14 @@ public class SvendPageController {
         } else {
             order.setDescription("Materialeanmodning fra SVEND");
         }
+        String base = order.getDescription() != null ? order.getDescription() : "";
+        if (floorType != null && !floorType.isBlank()) {
+            base = base + " | Gulvtype: " + floorType.trim();
+        }
+        if (addressNote != null && !addressNote.isBlank()) {
+            base = base + " | Adresse: " + addressNote.trim();
+        }
+        order.setDescription(base);
         materialOrderRepository.save(order);
         return "redirect:/svend/dashboard";
     }
@@ -200,18 +210,23 @@ public class SvendPageController {
         String email = auth.getName();
         User user = userRepository.findByEmail(email).orElseThrow();
         model.addAttribute("userName", user.getName());
-        if ("floor".equalsIgnoreCase(type) && length != null && width != null) {
+        if ("floor".equalsIgnoreCase(type) && length != null && width != null && length > 0 && width > 0) {
             var calc = calculatorService.calculateFlooring(length, width, wastePercentage, packageSize);
             model.addAttribute("calc", calc);
-        } else if ("windows".equalsIgnoreCase(type) && height != null && width != null && windowCount != null) {
+        } else if ("windows".equalsIgnoreCase(type) && height != null && width != null && windowCount != null
+                && height > 0 && width > 0 && windowCount > 0) {
             var calc = calculatorService.calculateWindowTrim(height, width, windowCount, wastePercentage);
             model.addAttribute("calc", calc);
-        } else if ("insulation".equalsIgnoreCase(type) && wallLength != null && wallHeight != null) {
+        } else if ("insulation".equalsIgnoreCase(type) && wallLength != null && wallHeight != null
+                && wallLength > 0 && wallHeight > 0) {
             var calc = calculatorService.calculateInsulation(wallLength, wallHeight);
             model.addAttribute("calc", calc);
-        } else if ("battens".equalsIgnoreCase(type) && battensArea != null && battensSpacingCm != null) {
+        } else if ("battens".equalsIgnoreCase(type) && battensArea != null && battensSpacingCm != null
+                && battensArea > 0 && battensSpacingCm > 0) {
             var calc = calculatorService.calculateBattens(battensArea, battensSpacingCm);
             model.addAttribute("calc", calc);
+        } else if (type != null) {
+            model.addAttribute("calcError", "Udfyld venligst alle felter med gyldige værdier for: " + type);
         }
         model.addAttribute("type", type);
         return "svend-calculator";
