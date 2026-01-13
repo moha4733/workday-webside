@@ -47,6 +47,8 @@
         <tr>
           <th>Projektnavn</th>
           <th>Beskrivelse</th>
+          <th>Prioritet</th>
+          <th>Starttid</th>
           <th>Status</th>
           <th>Tildelt til</th>
           <th>Handling</th>
@@ -61,6 +63,8 @@
         <tr th:each="project : ${recentProjects}">
           <td th:text="${project.name}"></td>
           <td th:text="${project.description ?: 'Ingen beskrivelse'}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
+          <td th:text="${project.priority != null ? #strings.replace(project.priority.name(), '_', ' ') : 'Ikke sat'}"></td>
+          <td th:text="${project.startTime != null ? #temporals.format(project.startTime, 'HH:mm') : 'Ikke sat'}"></td>
           <td>
             <span class="status" th:classappend="${project.status.name() == 'IN_PROGRESS' ? 'progress' : 
                                                       project.status.name() == 'FINISHED' ? 'finished' : 

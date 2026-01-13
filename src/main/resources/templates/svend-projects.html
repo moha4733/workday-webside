@@ -37,7 +37,9 @@
         <tr>
           <th>Projektnavn</th>
           <th>Beskrivelse</th>
+          <th>Adresse</th>
           <th>Prioritet</th>
+          <th>Starttid</th>
           <th>Deadline</th>
           <th>Handling</th>
         </tr>
@@ -49,7 +51,9 @@
         <tr th:each="project : ${myProjects}">
           <td th:text="${project.name}"></td>
           <td th:text="${project.description ?: 'Ingen beskrivelse'}"></td>
+          <td th:text="${project.address ?: 'Ingen adresse'}"></td>
           <td th:text="${project.priority != null ? #strings.replace(project.priority.name(),'_',' ') : 'Ingen'}"></td>
+          <td th:text="${project.startTime != null ? #temporals.format(project.startTime, 'HH:mm') : 'Ikke sat'}"></td>
           <td th:text="${project.startDate}"></td>
           <td>
             <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>

@@ -5,12 +5,14 @@ public class ProjectSummaryDTO {
     private String name;
     private String address;
     private String description;
+    private java.time.LocalTime startTime;
     public ProjectSummaryDTO() {}
-    public ProjectSummaryDTO(Long id, String name, String address, String description) {
+    public ProjectSummaryDTO(Long id, String name, String address, String description, java.time.LocalTime startTime) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.description = description;
+        this.startTime = startTime;
     }
     public Long getId() {
         return id;
@@ -35,5 +37,11 @@ public class ProjectSummaryDTO {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public java.time.LocalTime getStartTime() {
+        return startTime;
+    }
+    public void setStartTime(java.time.LocalTime startTime) {
+        this.startTime = startTime;
     }
 }

@@ -23,15 +23,18 @@
     <header>
       <h1>Svend Dashboard</h1>
       <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
-      
+      <div style="margin-top:10px;">
+        
       </div>
-      
     </header>
 
     <div class="stats-grid">
       <div class="stat-card">
         <h3>Dagens Projekt</h3>
         <span class="number" th:text="${currentProject != null ? currentProject.name : 'Ingen'}">Ingen</span>
+        <div th:if="${currentProject != null && currentProject.startTime != null}" 
+             th:text="'Start kl. ' + ${#temporals.format(currentProject.startTime, 'HH:mm')}" 
+             style="margin-top:6px;color:#666;"></div>
       </div>
       <div class="stat-card">
         <h3>Timer i dag</h3>
@@ -64,7 +67,7 @@
           <td th:text="${project.startDate}"></td>
           <td>
             <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>
-            <a th:if="${currentProject != null}" th:href="@{/svend/projects/{id}/photo(id=${currentProject.id})}" class="btn-small" style="margin-left:6px;">Tag Billede</a>
+            <a th:href="@{/svend/projects/{id}/photo(id=${project.id})}" class="btn-small">Tag Billede</a>
           </td>
         </tr>
         </tbody>

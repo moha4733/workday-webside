@@ -44,7 +44,7 @@ public class SvendDashboardController {
         Optional<DayPlan> todayPlan = dayPlanRepository.findFirstByUser_IdAndDateOrderByDateAsc(userId, today);
         ProjectSummaryDTO currentProject = todayPlan
                 .map(DayPlan::getProject)
-                .map(p -> new ProjectSummaryDTO(p.getId(), p.getName(), p.getAddress(), p.getDescription()))
+                .map(p -> new ProjectSummaryDTO(p.getId(), p.getName(), p.getAddress(), p.getDescription(), p.getStartTime()))
                 .orElse(null);
 
         List<DayPlanDTO> calendarPreview = dayPlanRepository
@@ -53,7 +53,7 @@ public class SvendDashboardController {
                 .map(dp -> {
                     Project p = dp.getProject();
                     return new DayPlanDTO(dp.getDate(), p != null ? p.getId() : null, p != null ? p.getName() : null,
-                            p != null ? p.getAddress() : null, p != null ? p.getDescription() : null);
+                            p != null ? p.getAddress() : null, p != null ? p.getDescription() : null, p != null ? p.getStartTime() : null);
                 })
                 .collect(Collectors.toList());
 

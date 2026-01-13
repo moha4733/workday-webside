@@ -63,12 +63,12 @@ public class SvendPageController {
         Optional<DayPlan> todayPlan = dayPlanRepository.findFirstByUser_IdAndDateOrderByDateAsc(userId, today);
         ProjectSummaryDTO currentProject = todayPlan
                 .map(DayPlan::getProject)
-                .map(p -> new ProjectSummaryDTO(p.getId(), p.getName(), p.getAddress(), p.getDescription()))
+                .map(p -> new ProjectSummaryDTO(p.getId(), p.getName(), p.getAddress(), p.getDescription(), p.getStartTime()))
                 .orElseGet(() -> {
                     List<Project> assigned = projectRepository.findByAssignedUser_Id(userId);
                     Project inProgress = assigned.stream().filter(p -> p.getStatus() == ProjectStatus.IN_PROGRESS).findFirst().orElse(null);
                     Project fallback = inProgress != null ? inProgress : (assigned.isEmpty() ? null : assigned.get(0));
-                    return fallback != null ? new ProjectSummaryDTO(fallback.getId(), fallback.getName(), fallback.getAddress(), fallback.getDescription()) : null;
+                    return fallback != null ? new ProjectSummaryDTO(fallback.getId(), fallback.getName(), fallback.getAddress(), fallback.getDescription(), fallback.getStartTime()) : null;
                 });
 
         List<DayPlanDTO> calendarPreview = dayPlanRepository
@@ -77,7 +77,7 @@ public class SvendPageController {
                 .map(dp -> {
                     Project p = dp.getProject();
                     return new DayPlanDTO(dp.getDate(), p != null ? p.getId() : null, p != null ? p.getName() : null,
-                            p != null ? p.getAddress() : null, p != null ? p.getDescription() : null);
+                            p != null ? p.getAddress() : null, p != null ? p.getDescription() : null, p != null ? p.getStartTime() : null);
                 })
                 .collect(Collectors.toList());
         if (calendarPreview.isEmpty()) {
@@ -85,7 +85,7 @@ public class SvendPageController {
             Project p = assigned.stream().filter(pr -> pr.getStatus() == ProjectStatus.IN_PROGRESS).findFirst().orElse(assigned.isEmpty() ? null : assigned.get(0));
             if (p != null) {
                 for (int i = 0; i < 5; i++) {
-                    calendarPreview.add(new DayPlanDTO(today.plusDays(i), p.getId(), p.getName(), p.getAddress(), p.getDescription()));
+                    calendarPreview.add(new DayPlanDTO(today.plusDays(i), p.getId(), p.getName(), p.getAddress(), p.getDescription(), p.getStartTime()));
                 }
             }
         }

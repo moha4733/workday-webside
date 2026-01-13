@@ -1,6 +1,7 @@
 package dk.tommer.workday.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class DayPlanDTO {
     private LocalDate date;
@@ -8,13 +9,15 @@ public class DayPlanDTO {
     private String projectName;
     private String address;
     private String description;
+    private LocalTime startTime;
     public DayPlanDTO() {}
-    public DayPlanDTO(LocalDate date, Long projectId, String projectName, String address, String description) {
+    public DayPlanDTO(LocalDate date, Long projectId, String projectName, String address, String description, LocalTime startTime) {
         this.date = date;
         this.projectId = projectId;
         this.projectName = projectName;
         this.address = address;
         this.description = description;
+        this.startTime = startTime;
     }
     public LocalDate getDate() {
         return date;
@@ -45,5 +48,11 @@ public class DayPlanDTO {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
     }
 }

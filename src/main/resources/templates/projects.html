@@ -36,6 +36,8 @@
           <th>Beskrivelse</th>
           <th>Adresse</th>
           <th>Startdato</th>
+          <th>Starttid</th>
+          <th>Prioritet</th>
           <th>Status</th>
           <th>Arbejdstype</th>
           <th>Tildelt til</th>
@@ -53,6 +55,8 @@
           <td th:text="${project.description ?: 'Ingen beskrivelse'}"></td>
           <td th:text="${project.address ?: 'Ingen adresse'}"></td>
           <td th:text="${project.startDate ?: 'Ikke sat'}"></td>
+          <td th:text="${project.startTime != null ? #temporals.format(project.startTime, 'HH:mm') : 'Ikke sat'}"></td>
+          <td th:text="${project.priority != null ? #strings.replace(project.priority.name(),'_',' ') : 'Ikke sat'}"></td>
           <td>
             <span class="status" th:classappend="${project.status.name() == 'IN_PROGRESS' ? 'progress' : 
                                                       project.status.name() == 'FINISHED' ? 'finished' : 
