@@ -52,6 +52,7 @@
             <form th:action="@{/admin/orders/{id}/approve(id=${mo.id})}" method="post">
               <button type="submit" class="btn-small">Godkend</button>
             </form>
+            <a th:href="@{/admin/orders/{id}/pdf(id=${mo.id})}" class="btn-small" style="background-color:#795548;">Download PDF</a>
           </td>
         </tr>
         </tbody>
@@ -80,6 +81,9 @@
           <td th:text="${mo.user != null ? mo.user.email : 'Ukendt'}"></td>
           <td><span class="status" th:text="${mo.status}"></span></td>
           <td th:text="${#temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+          <td>
+            <a th:href="@{/admin/orders/{id}/pdf(id=${mo.id})}" class="btn-small" style="background-color:#795548;">Download PDF</a>
+          </td>
         </tr>
         </tbody>
       </table>
