@@ -198,7 +198,7 @@
               </label>
             </div>
             <label>Adresse / Kommentar
-              <input type="text" name="addressNote" placeholder="fx Hovedgade 123, København">
+              <input type="text" name="addressNote" placeholder="fx Hovedgade 123, København" th:value="${project != null ? project.address : ''}">
             </label>
           </div>
           <button type="submit" class="btn-small">Opret materialeanmodning</button>

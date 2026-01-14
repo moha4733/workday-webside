@@ -65,6 +65,8 @@ th { color: #8b5e3c; text-transform: uppercase; font-size: 12px; }
 .btn-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .btn-small.secondary { background: #795548; }
 .btn-small.success { background: #4CAF50; }
+.btn-small.info { background: #2196F3; }
+.btn-small.danger { background: #f44336; }
 
 .btn-primary {
     display: inline-block;

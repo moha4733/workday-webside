@@ -80,6 +80,15 @@ public class SvendPageController {
                             p != null ? p.getAddress() : null, p != null ? p.getDescription() : null, p != null ? p.getStartTime() : null);
                 })
                 .collect(Collectors.toList());
+        if (calendarPreview.isEmpty()) {
+            List<DayPlanDTO> projectBased = projectRepository.findByAssignedUser_Id(userId).stream()
+                    .filter(p -> p.getStartDate() != null && !p.getStartDate().isBefore(today))
+                    .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate()))
+                    .limit(5)
+                    .map(p -> new DayPlanDTO(p.getStartDate(), p.getId(), p.getName(), p.getAddress(), p.getDescription(), p.getStartTime()))
+                    .collect(Collectors.toList());
+            calendarPreview = projectBased;
+        }
 
         List<MaterialOrderDTO> materialStatus = materialOrderRepository
                 .findTop3ByUser_IdOrderByCreatedAtDesc(userId)
