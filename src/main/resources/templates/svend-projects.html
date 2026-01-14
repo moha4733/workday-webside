@@ -51,7 +51,12 @@
         <tr th:each="project : ${myProjects}">
           <td th:text="${project.name}"></td>
           <td th:text="${project.description ?: 'Ingen beskrivelse'}"></td>
-          <td th:text="${project.address ?: 'Ingen adresse'}"></td>
+          <td>
+            <span th:if="${project.address == null or #strings.isEmpty(project.address)}">Ingen adresse</span>
+            <a th:if="${project.address != null and !#strings.isEmpty(project.address)}"
+               th:href="'https://www.google.com/maps/search/?api=1&query=' + ${#strings.urlEncode(project.address)}"
+               target="_blank" th:text="${project.address}"></a>
+          </td>
           <td th:text="${project.priority != null ? #strings.replace(project.priority.name(),'_',' ') : 'Ingen'}"></td>
           <td th:text="${project.startTime != null ? #temporals.format(project.startTime, 'HH:mm') : 'Ikke sat'}"></td>
           <td th:text="${project.startDate}"></td>
