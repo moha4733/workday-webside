@@ -31,6 +31,7 @@ Workday er et hobbyprojekt til at understøtte daglig planlægning for en tømre
 - Thymeleaf (server-side templates)
 - H2 in-memory database (udvikling)
 - Maven wrapper (mvnw)
+- Playwright (E2E browser-tests)
 
 ## Hurtig start
 - Krav: Java 17+ og internet (for Maven wrapper)
@@ -48,6 +49,32 @@ Workday er et hobbyprojekt til at understøtte daglig planlægning for en tømre
 - H2 in-memory (nulstilles ved genstart)
 - JPA genererer skema automatisk (spring.jpa.hibernate.ddl-auto=update)
 - En reference/initialiseringsskript findes i `src/main/resources/schema.sql` (H2-kompatibel)
+
+## Tests
+- Unit/Integration (JUnit 5)
+  - Kør alle tests:
+    ```bash
+    ./mvnw -q test
+    ```
+  - Dækker service-laget, controller-slice, integration og simpel E2E via Spring Boot.
+- End-to-End (Playwright i rigtig browser)
+  - Setup:
+    ```bash
+    npm install --no-audit --no-fund
+    npm run playwright:install
+    ```
+  - Kør server og tests:
+    ```bash
+    ./mvnw spring-boot:run
+    npm run test:e2e
+    ```
+  - Konfiguration:
+    - baseURL: http://localhost:8080
+    - Finder tests under `e2e/` (fx login og beregner/bestilling)
+  - Formål:
+    - Validerer Thymeleaf-HTML i rigtig browser
+    - Simulerer klik, formularer, navigation
+    - Verificerer komplette brugerflows fra UI → backend → database
 
 ## Vigtige sider
 - Admin
@@ -67,4 +94,3 @@ Projektet er lavet som et praktisk eksperiment med værktøjer og arbejdsgange i
 
 ## Licens
 Privat hobbyprojekt.
-
