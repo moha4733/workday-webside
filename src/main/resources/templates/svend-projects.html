@@ -54,7 +54,7 @@
           <td>
             <span th:if="${project.address == null or #strings.isEmpty(project.address)}">Ingen adresse</span>
             <a th:if="${project.address != null and !#strings.isEmpty(project.address)}"
-               th:href="'https://www.google.com/maps/search/?api=1&query=' + ${#strings.urlEncode(project.address)}"
+               th:href="@{'https://www.google.com/maps/search/'(api=1, query=${project.address})}"
                target="_blank" th:text="${project.address}"></a>
           </td>
           <td th:text="${project.priority != null ? #strings.replace(project.priority.name(),'_',' ') : 'Ingen'}"></td>
