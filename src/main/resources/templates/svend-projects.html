@@ -64,6 +64,7 @@
             <div class="btn-group">
               <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>
               <a th:href="@{/svend/projects/{id}/photo(id=${project.id})}" class="btn-small">Tag Billede</a>
+              <a th:href="@{/svend/calculator(projectId=${project.id})}" class="btn-small">Bestil materialer</a>
               <form th:action="@{/svend/projects/{id}/status(id=${project.id})}" method="post">
                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <input type="hidden" name="status" value="IN_PROGRESS"/>

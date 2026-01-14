@@ -110,6 +110,7 @@ public class SvendPageController {
     public String createMaterialOrder(@RequestParam(required = false) Double grossArea,
                                       @RequestParam(required = false) String orderDescription,
                                       @RequestParam(required = false) String type,
+                                      @RequestParam(required = false) Long projectId,
                                       @RequestParam(required = false) String floorType,
                                       @RequestParam(required = false) String insulationType,
                                       @RequestParam(required = false) String gypsumType,
@@ -153,6 +154,12 @@ public class SvendPageController {
             base = base + " | Adresse: " + addressNote.trim();
         }
         order.setDescription(base);
+        if (projectId != null) {
+            Project project = projectRepository.findById(projectId).orElse(null);
+            if (project != null && project.getAssignedUser() != null && project.getAssignedUser().getEmail().equals(email)) {
+                order.setProject(project);
+            }
+        }
         materialOrderRepository.save(order);
         return "redirect:/svend/dashboard";
     }
@@ -288,6 +295,7 @@ public class SvendPageController {
     @GetMapping("/calculator")
     public String calculator(Model model,
                              @RequestParam(required = false) String type,
+                             @RequestParam(required = false) Long projectId,
                              @RequestParam(required = false) Double length,
                              @RequestParam(required = false) Double width,
                              @RequestParam(required = false) Double wastePercentage,
@@ -302,6 +310,15 @@ public class SvendPageController {
         String email = auth.getName();
         User user = userRepository.findByEmail(email).orElseThrow();
         model.addAttribute("userName", user.getName());
+        if (projectId != null) {
+            Project project = projectRepository.findById(projectId).orElse(null);
+            if (project != null && project.getAssignedUser() != null && project.getAssignedUser().getId() == user.getId()) {
+                model.addAttribute("project", project);
+                model.addAttribute("projectId", projectId);
+            } else {
+                model.addAttribute("projectId", projectId);
+            }
+        }
         if ("floor".equalsIgnoreCase(type) && length != null && width != null && length > 0 && width > 0) {
             var calc = calculatorService.calculateFlooring(length, width, wastePercentage, packageSize);
             model.addAttribute("calc", calc);

@@ -12,6 +12,9 @@ public class MaterialOrder {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status = MaterialStatus.PENDING;
     @Column(nullable = false)
@@ -29,6 +32,12 @@ public class MaterialOrder {
     }
     public void setUser(User user) {
         this.user = user;
+    }
+    public Project getProject() {
+        return project;
+    }
+    public void setProject(Project project) {
+        this.project = project;
     }
     public MaterialStatus getStatus() {
         return status;

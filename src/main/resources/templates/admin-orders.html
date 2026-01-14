@@ -33,6 +33,7 @@
           <th>ID</th>
           <th>Beskrivelse</th>
           <th>Bruger</th>
+          <th>Projekt</th>
           <th>Status</th>
           <th>Oprettet</th>
           <th>Handling</th>
@@ -46,6 +47,7 @@
           <td th:text="${mo.id}"></td>
           <td th:text="${mo.description}"></td>
           <td th:text="${mo.user != null ? mo.user.email : 'Ukendt'}"></td>
+          <td th:text="${mo.project != null ? mo.project.name : 'Ingen'}"></td>
           <td><span class="status pending" th:text="${mo.status}"></span></td>
           <td th:text="${#temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
           <td>
@@ -67,6 +69,7 @@
           <th>ID</th>
           <th>Beskrivelse</th>
           <th>Bruger</th>
+          <th>Projekt</th>
           <th>Status</th>
           <th>Oprettet</th>
         </tr>
@@ -79,6 +82,7 @@
           <td th:text="${mo.id}"></td>
           <td th:text="${mo.description}"></td>
           <td th:text="${mo.user != null ? mo.user.email : 'Ukendt'}"></td>
+          <td th:text="${mo.project != null ? mo.project.name : 'Ingen'}"></td>
           <td><span class="status" th:text="${mo.status}"></span></td>
           <td th:text="${#temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
           <td>

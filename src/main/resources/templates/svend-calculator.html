@@ -36,6 +36,11 @@
 
     <section class="table-section">
       <div class="calc-card">
+        <div th:if="${project != null}" style="margin-bottom:10px;">
+          <strong>Bestilling til projekt:</strong>
+          <span th:text="${project.name}">Projekt</span>
+          <span th:if="${project.address != null}" style="color:#666;"> — <span th:text="${project.address}"></span></span>
+        </div>
         <form th:action="@{/svend/calculator}" method="get" id="calcForm">
           <div class="calc-grid">
             <label>Type
@@ -162,6 +167,7 @@
 
         <form th:action="@{/svend/material-order}" method="post" style="margin-top: 12px;" class="calc-card">
           <input type="hidden" name="type" th:value="${calc.type}">
+          <input type="hidden" name="projectId" th:value="${projectId}">
           <input type="hidden" name="orderDescription"
                  th:value="${calc.type == 'floor' ? 'Gulvmateriale bestilling: ' + calc.grossArea + ' m2' :
                             (calc.type == 'windows' ? 'Lister/vinduesindfatninger: ' + calc.linearMeters + ' m' :
