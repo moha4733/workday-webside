@@ -105,9 +105,4 @@ public class HomeController {
         
         return "admin-dashboard";
     }
-
-    @GetMapping("/user/dashboard")
-    public String userDashboard(){
-        return "user-dashboard";
-    }
 }

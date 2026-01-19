@@ -95,7 +95,11 @@ public class SvendPageController {
                 .stream()
                 .map(mo -> new MaterialOrderDTO(mo.getId(), mo.getDescription(), mo.getStatus(), mo.getCreatedAt()))
                 .collect(Collectors.toList());
-        String latestOrderStatus = materialStatus.isEmpty() ? "Ingen" : materialStatus.get(0).getStatus().name();
+        String latestOrderStatus = "Ingen";
+        if (!materialStatus.isEmpty()) {
+            var st = materialStatus.get(0).getStatus();
+            latestOrderStatus = (st != null) ? st.name() : "Ingen";
+        }
 
         Double dailyTotalHours = workLogRepository.sumHoursByUserIdAndDate(userId, today);
 

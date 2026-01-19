@@ -52,7 +52,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/welcome", "/register", "/login", "/create-admin", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/svend/**").hasRole("SVEND")
                         .requestMatchers("/api/svend/**", "/api/dashboard/svend").hasRole("SVEND")
                         .anyRequest().authenticated()
@@ -79,7 +78,10 @@ public class SecurityConfig {
             logger.info("=== UserDetailsService: Attempting to load user with email: {} ===", username);
             return userRepository.findByEmail(username)
                     .map(user -> {
-                        String role = user.getRole() != null ? user.getRole().name() : "USER";
+                        // Appen kører kun med ADMIN + SVEND. Hvis der ligger gamle USER/null roller i DB,
+                        // behandles de som SVEND for at undgå 500/403 efter login.
+                        String role = user.getRole() != null ? user.getRole().name() : "SVEND";
+                        if ("USER".equals(role)) role = "SVEND";
                         logger.info("User found: {} with role: {}", user.getEmail(), role);
                         logger.info("User password hash (first 20 chars): {}", 
                                 user.getPassword() != null && user.getPassword().length() > 20 
@@ -124,12 +126,10 @@ public class SecurityConfig {
                 if (isAdmin) {
                     logger.info("Admin user logged in, redirecting to admin dashboard");
                     response.sendRedirect("/admin/dashboard");
-                } else if (isSvend) {
-                    logger.info("Svend user logged in, redirecting to svend dashboard page");
-                    response.sendRedirect("/svend/dashboard");
                 } else {
-                    logger.info("Regular user logged in, redirecting to user dashboard");
-                    response.sendRedirect("/user/dashboard");
+                    // Default: SVEND dashboard
+                    logger.info("User logged in, redirecting to svend dashboard page");
+                    response.sendRedirect("/svend/dashboard");
                 }
             }
         };

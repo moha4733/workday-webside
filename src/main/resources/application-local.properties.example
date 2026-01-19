@@ -1,0 +1,8 @@
+# Copy this file to `./application-local.properties` (project root, ignored by git).
+# Then fill in your local DB credentials (do NOT commit).
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=workday
+DB_USER=root
+DB_PASSWORD=CHANGE_ME

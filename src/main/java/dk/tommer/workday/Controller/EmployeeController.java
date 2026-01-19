@@ -25,9 +25,9 @@ public class EmployeeController {
 
     @GetMapping
     public String listEmployees(Model model) {
-        // Hent alle brugere med USER rolle (medarbejdere)
+        // Hent alle brugere med SVEND rolle (medarbejdere)
         List<User> employees = userRepository.findAll().stream()
-                .filter(user -> user.getRole() == Role.USER)
+                .filter(user -> user.getRole() == Role.SVEND)
                 .toList();
         
         // For hver medarbejder, find deres tildelte projekter

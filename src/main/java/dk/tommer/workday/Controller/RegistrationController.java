@@ -39,7 +39,8 @@ public class RegistrationController {
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") User user) {
         // Her kalder vi servicen i stedet for at gøre alt arbejdet i controlleren
-        userService.createUser(user.getName(), user.getEmail(), user.getPassword(), Role.USER);
+        // Nye brugere er SVEND (der er kun én ADMIN, som allerede findes)
+        userService.createUser(user.getName(), user.getEmail(), user.getPassword(), Role.SVEND);
         return "redirect:/login?success";
     }
 }

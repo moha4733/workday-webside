@@ -81,6 +81,17 @@ public class DataInitializer implements CommandLineRunner {
                 userRepository.save(svend);
                 logger.info("Svend user created: {} / {}", svendEmail, svendPassword);
             }
+
+            // Appen bruger kun ADMIN + SVEND. Sørg for at alle ikke-admin brugere har SVEND-rolle,
+            // så ældre data (USER/null) ikke giver uventet flow efter login.
+            userRepository.findAll().stream()
+                    .filter(u -> u.getEmail() != null && !adminEmail.equalsIgnoreCase(u.getEmail()))
+                    .filter(u -> u.getRole() == null || u.getRole() == Role.USER)
+                    .forEach(u -> {
+                        logger.info("Upgrading user role to SVEND for: {} (was: {})", u.getEmail(), u.getRole());
+                        u.setRole(Role.SVEND);
+                        userRepository.save(u);
+                    });
         } catch (Exception e) {
             logger.error("Error in DataInitializer: {}", e.getMessage(), e);
             throw e;
