@@ -1,8 +1,14 @@
 # Copy this file to `./application-local.properties` (project root, ignored by git).
 # Then fill in your local DB credentials (do NOT commit).
+# This will override the default H2 database with MySQL.
 
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=workday
+# MySQL configuration
+DB_URL=jdbc:mysql://localhost:3306/workday?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
 DB_USER=root
 DB_PASSWORD=CHANGE_ME
+DB_DRIVER=com.mysql.cj.jdbc.Driver
+DB_DIALECT=org.hibernate.dialect.MySQLDialect
+
+# Optional: Adjust logging
+DB_SHOW_SQL=true
+DB_FORMAT_SQL=true

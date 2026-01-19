@@ -1,17 +1,20 @@
 package dk.tommer.workday.config;
 
-import dk.tommer.workday.entity.Role;
-import dk.tommer.workday.entity.User;
-import dk.tommer.workday.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import dk.tommer.workday.entity.Role;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.repository.UserRepository;
+
 @Component
+@Profile("!test") // Kør ikke i test-profil
 public class DataInitializer implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
@@ -52,24 +55,17 @@ public class DataInitializer implements CommandLineRunner {
                 User existingAdmin = userRepository.findByEmail(adminEmail).get();
                 logger.info("Admin user found with ID: {} and role: {}", existingAdmin.getId(), existingAdmin.getRole());
                 
-                boolean needsUpdate = false;
                 if (existingAdmin.getRole() != Role.ADMIN) {
                     logger.info("Updating existing user to admin role...");
                     existingAdmin.setRole(Role.ADMIN);
-                    needsUpdate = true;
                 }
                 
                 // Always update password to ensure it's correctly encoded
                 logger.info("Updating admin password to ensure correct encoding...");
                 existingAdmin.setPassword(passwordEncoder.encode(adminPassword));
-                needsUpdate = true;
                 
-                if (needsUpdate) {
-                    userRepository.save(existingAdmin);
-                    logger.info("Admin user updated with correct role and password");
-                } else {
-                    logger.info("Admin user already exists with correct role");
-                }
+                userRepository.save(existingAdmin);
+                logger.info("Admin user updated with correct role and password");
             }
             logger.info("DataInitializer completed successfully");
             if (userRepository.findByEmail(svendEmail).isEmpty()) {

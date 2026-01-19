@@ -1,21 +1,24 @@
 package dk.tommer.workday.e2e;
 
+import dk.tommer.workday.entity.Role;
+import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.MaterialOrderRepository;
+import dk.tommer.workday.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 // End-to-End test: RANDOM_PORT og HTTP-request simulerer fuldt flow til database
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@Transactional
 class WorkdayE2ETest {
 
     @LocalServerPort
@@ -24,27 +27,45 @@ class WorkdayE2ETest {
     @Autowired
     private MaterialOrderRepository materialOrderRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setup() {
+        // Opret test-brugere hvis de ikke findes
+        if (userRepository.findByEmail("admin@workday.dk").isEmpty()) {
+            User admin = new User();
+            admin.setName("Test Admin");
+            admin.setEmail("admin@workday.dk");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole(Role.ADMIN);
+            userRepository.save(admin);
+        }
+        
+        if (userRepository.findByEmail("svend@workday.dk").isEmpty()) {
+            User svend = new User();
+            svend.setName("Test Svend");
+            svend.setEmail("svend@workday.dk");
+            svend.setPassword(passwordEncoder.encode("svend123"));
+            svend.setRole(Role.SVEND);
+            userRepository.save(svend);
+        }
+    }
+
     private String baseUrl() {
         return "http://localhost:" + port;
     }
 
     @Test
-    void e2e_createMaterialOrder_incrementsCount() {
-        long before = materialOrderRepository.count();
-        RestTemplate rt = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        // Uden auth: endpoint bruger SecurityContext; i E2E kan denne del være afhængig af setup
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grossArea", "25.0");
-        HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(map, headers);
-        try {
-            rt.postForEntity(baseUrl() + "/api/svend/material-order", req, String.class);
-        } catch (Exception ignored) {
-            // Hvis Security blokerer uden auth, vil request fejle; testen er tolerant for hobby-setup
-        }
-        long after = materialOrderRepository.count();
-        assertThat(after).isGreaterThanOrEqualTo(before); // accepterer både 0-change og +1 afhængigt af security
+    void e2e_applicationContextLoads() {
+        // Verificer at application context loader korrekt
+        assertThat(materialOrderRepository).isNotNull();
+        assertThat(userRepository).isNotNull();
+        assertThat(userRepository.findByEmail("admin@workday.dk")).isPresent();
+        assertThat(userRepository.findByEmail("svend@workday.dk")).isPresent();
     }
 }
 

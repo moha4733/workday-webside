@@ -3,16 +3,22 @@
 Tak fordi du vil bidrage til Workday. Projektet er et privat hobbyprojekt, der fokuserer på enkelhed, praktisk funktionalitet og stabilitet. Følg nedenstående retningslinjer for at sikre ensartet kvalitet.
 
 ## Kom i gang lokalt
-- Krav: Java 17+
-- Build og kør:
+- Krav: Java 17+ (Maven wrapper inkluderet)
+- Hurtig start med H2 (standard - ingen ekstra setup):
   ```bash
-  ./mvnw -q -DskipTests package
+  # Windows
+  mvnw.cmd spring-boot:run
+  
+  # Linux/Mac
   ./mvnw spring-boot:run
   ```
   Åbn http://localhost:8080
-- Demo-brugere oprettes automatisk:
-  - Admin: admin@workday.dk / admin123
-  - Svend: svend@workday.dk / svend123
+- Demo-brugere oprettes automatisk ved første kørsel:
+  - Admin: `admin@workday.dk` / `admin123`
+  - Svend: `svend@workday.dk` / `svend123`
+- MySQL (valgfrit):
+  - Kopiér `src/main/resources/application-local.properties.example` til `application-local.properties`
+  - Udfyld MySQL credentials (se README.md for detaljer)
 
 ## Branching
 - Arbejd på feature-branches, ikke direkte på main.
@@ -32,10 +38,12 @@ Tak fordi du vil bidrage til Workday. Projektet er et privat hobbyprojekt, der f
 ## Pull Requests
 - Beskriv ændringer, motivation og påvirkede områder.
 - Tjekliste før PR:
-  - Projektet bygger lokalt uden fejl (`./mvnw -q -DskipTests package`).
+  - Projektet bygger lokalt uden fejl (`mvnw.cmd package` eller `./mvnw package`).
+  - Alle tests kører (`mvnw.cmd test` eller `./mvnw test`).
   - Ingen hemmeligheder/credentials i kode eller logs.
   - UI matcher eksisterende tema (admin.css).
   - Roller respekteres (Admin: kun prioritet; Svend: kun status).
+  - Nye features har tests (unit/integration som relevant).
 
 ## Kode-standard
 - Backend (Java/Spring Boot):
@@ -52,16 +60,48 @@ Tak fordi du vil bidrage til Workday. Projektet er et privat hobbyprojekt, der f
   - Log aldrig adgangskoder eller tokens.
 
 ## Database
-- Udvikling bruger H2 in-memory (nulstilles ved genstart).
-- JPA genererer skema (`spring.jpa.hibernate.ddl-auto=update`).
-- Reference-skema: `src/main/resources/schema.sql` (H2-kompatibel).
+- **Standard**: H2 in-memory database (ingen setup påkrævet, nulstilles ved genstart).
+- **Valgfrit**: MySQL kan konfigureres via `application-local.properties` (se README.md).
+- JPA genererer skema automatisk (`spring.jpa.hibernate.ddl-auto=update`).
+- Reference-skema: `src/main/resources/schema.sql` (kompatibel med både H2 og MySQL).
 - Tabelnavne følger @Table: `users`, `projects`, `material_orders`, `work_types`, `day_plans`, `work_logs`, `company`.
 - Enums gemmes som `VARCHAR` (STRING).
+- **Tests**: Bruger automatisk H2 via test-profil (`@ActiveProfiles("test")`).
 
 ## Tests og verifikation
-- Kør tests (hvis tilføjet): `./mvnw test`
-- Byg: `./mvnw -q package`
-- Manuelt check:
+- **Kør alle tests**:
+  ```bash
+  # Windows
+  mvnw.cmd test
+  
+  # Linux/Mac
+  ./mvnw test
+  ```
+- Tests bruger automatisk H2 in-memory database (ingen ekstra konfiguration).
+- Test-klasser skal bruge `@ActiveProfiles("test")` for at aktivere test-konfiguration.
+- **Test-dækning**:
+  - Unit tests: Service-lag (fx `MaterialCalculatorServiceTest`)
+  - Controller tests: MockMvc slice tests (fx `SvendCalculatorControllerWebTest`)
+  - Integration tests: Fuld Spring context (fx `WorkdayIntegrationTest`)
+  - E2E tests: Application context loading (fx `WorkdayE2ETest`)
+- **Playwright E2E tests** (valgfrit, men anbefalet for UI-ændringer):
+  ```bash
+  # 1. Start applikationen
+  mvnw.cmd spring-boot:run
+  
+  # 2. I anden terminal - kør Playwright tests
+  npm run test:e2e
+  ```
+  - Tests findes i `e2e/` mappen
+  - Konfiguration: `playwright.config.ts`
+  - Kræver at applikationen kører på http://localhost:8080
+- **Byg projektet**:
+  ```bash
+  mvnw.cmd package
+  # eller
+  ./mvnw package
+  ```
+- **Manuelt check** (efter ændringer):
   - Login flows (Admin/Svend)
   - Projekter (oprettelse/visning/tildeling)
   - Materialeberegner og bestillingsflow
