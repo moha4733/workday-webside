@@ -4,6 +4,77 @@
   <meta charset="UTF-8">
   <title>Svend Indstillinger | Workday</title>
   <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <style>
+    .settings-container {
+      max-width: 600px;
+      margin: 20px 0;
+    }
+    .settings-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .settings-section h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #8B4513;
+      font-size: 1.5em;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .form-group input[type="password"]:focus {
+      outline: none;
+      border-color: #8B4513;
+    }
+    .btn-group {
+      margin-top: 20px;
+    }
+    .btn-primary {
+      background-color: #8B4513;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn-primary:hover {
+      background-color: #6B3410;
+    }
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
 </head>
 <body>
 <div class="dashboard-wrapper">
@@ -24,9 +95,38 @@
       <h1>Indstillinger</h1>
       <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
     </header>
-    <section class="table-section">
-      <p>Her kan du senere tilpasse dine visninger og profiler.</p>
-    </section>
+
+    <div th:if="${success}" class="alert alert-success">
+      <p th:text="${success}"></p>
+    </div>
+    <div th:if="${error}" class="alert alert-error">
+      <p th:text="${error}"></p>
+    </div>
+
+    <div class="settings-container">
+      <!-- Sikkerhed - Skift password -->
+      <section class="settings-section">
+        <h2>Skift password</h2>
+        <form th:action="@{/svend/settings/change-password}" method="post">
+          <div class="form-group">
+            <label for="oldPassword">Gammelt password</label>
+            <input type="password" id="oldPassword" name="oldPassword" required/>
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Nyt password</label>
+            <input type="password" id="newPassword" name="newPassword" required minlength="6"/>
+            <small style="color: #666; font-size: 12px;">Minimum 6 tegn</small>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Bekræft nyt password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6"/>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn-primary">Skift password</button>
+          </div>
+        </form>
+      </section>
+    </div>
   </main>
 </div>
 </body>

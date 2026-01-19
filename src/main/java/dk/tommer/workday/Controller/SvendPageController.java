@@ -1,5 +1,23 @@
 package dk.tommer.workday.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import dk.tommer.workday.dto.DayPlanDTO;
 import dk.tommer.workday.dto.MaterialOrderDTO;
 import dk.tommer.workday.dto.ProjectSummaryDTO;
@@ -8,28 +26,12 @@ import dk.tommer.workday.entity.MaterialOrder;
 import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.ProjectStatus;
 import dk.tommer.workday.entity.User;
-import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.DayPlanRepository;
 import dk.tommer.workday.repository.MaterialOrderRepository;
+import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.repository.WorkLogRepository;
 import dk.tommer.workday.service.MaterialCalculatorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/svend")
@@ -46,6 +48,8 @@ public class SvendPageController {
     private MaterialCalculatorService calculatorService;
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model,
@@ -361,5 +365,41 @@ public class SvendPageController {
         User user = userRepository.findByEmail(email).orElseThrow();
         model.addAttribute("userName", user.getName());
         return "svend-settings";
+    }
+
+    @PostMapping("/settings/change-password")
+    public String changePassword(@RequestParam String oldPassword,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword,
+                                RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Tjek om gamle password er korrekt
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            redirectAttributes.addFlashAttribute("error", "Gammelt password er forkert!");
+            return "redirect:/svend/settings";
+        }
+
+        // Tjek om nye passwords matcher
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Nye passwords matcher ikke!");
+            return "redirect:/svend/settings";
+        }
+
+        // Tjek minimum længde
+        if (newPassword.length() < 6) {
+            redirectAttributes.addFlashAttribute("error", "Nyt password skal være mindst 6 tegn!");
+            return "redirect:/svend/settings";
+        }
+
+        // Opdater password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        redirectAttributes.addFlashAttribute("success", "Password opdateret succesfuldt!");
+        return "redirect:/svend/settings";
     }
 }
