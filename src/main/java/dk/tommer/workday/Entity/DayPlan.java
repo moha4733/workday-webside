@@ -1,4 +1,4 @@
-package dk.tommer.workday.entity;
+package dk.tommer.workday.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;

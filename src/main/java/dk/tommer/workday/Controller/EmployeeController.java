@@ -1,4 +1,4 @@
-package dk.tommer.workday.controller;
+package dk.tommer.workday.Controller;
 
 import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.Role;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/employees")

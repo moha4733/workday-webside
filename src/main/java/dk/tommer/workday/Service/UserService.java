@@ -1,4 +1,4 @@
-package dk.tommer.workday.service;
+package dk.tommer.workday.Service;
 
 import dk.tommer.workday.entity.Role;
 import dk.tommer.workday.entity.User;
