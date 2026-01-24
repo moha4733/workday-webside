@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 // Unit tests: tester service-laget isoleret med JUnit 5 (AAA-pattern)
-public class MaterialCalculatorServiceTest {
+class MaterialCalculatorServiceTest {
     private final MaterialCalculatorService service = new MaterialCalculatorService();
 
     @Test
