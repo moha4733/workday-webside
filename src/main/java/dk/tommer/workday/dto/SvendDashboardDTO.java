@@ -1,6 +1,7 @@
 package dk.tommer.workday.dto;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class SvendDashboardDTO {
     private ProjectSummaryDTO currentProject;
@@ -17,13 +18,13 @@ public class SvendDashboardDTO {
         return calendarPreview;
     }
     public void setCalendarPreview(List<DayPlanDTO> calendarPreview) {
-        this.calendarPreview = calendarPreview;
+        this.calendarPreview = new ArrayList<>(calendarPreview);
     }
     public List<MaterialOrderDTO> getMaterialStatus() {
         return materialStatus;
     }
     public void setMaterialStatus(List<MaterialOrderDTO> materialStatus) {
-        this.materialStatus = materialStatus;
+        this.materialStatus = new ArrayList<>(materialStatus);
     }
     public Double getDailyTotalHours() {
         return dailyTotalHours;
