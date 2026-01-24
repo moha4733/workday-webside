@@ -7,8 +7,6 @@ import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
     private UserService userService;
@@ -34,7 +31,6 @@ public class HomeController {
 
     @Autowired
     private ProjectRepository projectRepository;
-
 
 
     @GetMapping("/login")
