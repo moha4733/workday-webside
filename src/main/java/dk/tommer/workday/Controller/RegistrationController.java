@@ -1,5 +1,6 @@
 package dk.tommer.workday.controller;
 
+import dk.tommer.workday.dto.UserRegistrationDTO;
 import dk.tommer.workday.entity.Role;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.UserRepository;
@@ -30,17 +31,19 @@ public class RegistrationController {
         return "welcome";
     }
 
+
+
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserRegistrationDTO());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user) {
+    public String registerUser(@ModelAttribute("user") UserRegistrationDTO userDTO) {
         // Her kalder vi servicen i stedet for at gøre alt arbejdet i controlleren
         // Nye brugere er SVEND (der er kun én ADMIN, som allerede findes)
-        userService.createUser(user.getName(), user.getEmail(), user.getPassword(), Role.SVEND);
+        userService.createUser(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword(), Role.SVEND);
         return "redirect:/login?success";
     }
 }
