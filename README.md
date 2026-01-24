@@ -27,14 +27,14 @@ Workday er et hobbyprojekt til at understøtte daglig planlægning for en tømre
   - Svend kan uploade billeder pr. projekt til dokumentation
 
 ## Teknologi
-- Spring Boot 4.0.1 (MVC, Security, JPA)
+- Spring Boot 3.2.5 (MVC, Security, JPA)
 - Thymeleaf (server-side templates)
 - MySQL eller H2 database (konfigureres via application.properties)
 - Maven wrapper (mvnw)
 - Playwright (E2E browser-tests)
 
 ## Krav
-- Java 17 eller nyere
+- Java 21
 - Maven (inkluderet via Maven wrapper)
 - (Valgfrit) MySQL 8.0+ hvis du vil bruge MySQL i stedet for H2
 
@@ -54,6 +54,8 @@ Projektet kan køre direkte med H2 in-memory database uden yderligere konfigurat
 mvnw.cmd spring-boot:run
 
 # Linux/Mac
+# Sørg for at du bruger Java 21
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home
 ./mvnw spring-boot:run
 ```
 
@@ -113,6 +115,7 @@ Kør alle tests:
 mvnw.cmd test
 
 # Linux/Mac
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home
 ./mvnw test
 ```
 

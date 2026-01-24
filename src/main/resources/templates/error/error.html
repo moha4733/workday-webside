@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Fejl - Workday</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <div class="card border-danger shadow">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <span th:text="${errorTitle}">Fejl</span>
+                        </h3>
+                    </div>
+                    <div class="card-body py-5">
+                        <h1 class="display-1 text-danger fw-bold" th:text="${errorCode}">Fejl</h1>
+                        <p class="lead mb-4" th:text="${errorMessage}">Der opstod en uventet fejl.</p>
+                        
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                            <a href="/" class="btn btn-secondary btn-lg px-4 gap-3">
+                                <i class="bi bi-house-door-fill"></i> Gå til forsiden
+                            </a>
+                            <a href="javascript:history.back()" class="btn btn-outline-danger btn-lg px-4">
+                                <i class="bi bi-arrow-left"></i> Tilbage
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted small">
+                        Hvis problemet fortsætter, kontakt venligst support.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

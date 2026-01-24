@@ -4,7 +4,7 @@ import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.Role;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.ProjectRepository;
-import dk.tommer.workday.repository.UserRepository;
+import dk.tommer.workday.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,34 +18,18 @@ import java.util.List;
 public class EmployeeController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ProjectRepository projectRepository;
+    private EmployeeService employeeService;
 
     @GetMapping
     public String listEmployees(Model model) {
-        // Hent alle brugere med SVEND rolle (medarbejdere)
-        List<User> employees = userRepository.findAll().stream()
-                .filter(user -> user.getRole() == Role.SVEND)
-                .toList();
-        
-        // For hver medarbejder, find deres tildelte projekter
-        for (User employee : employees) {
-            List<Project> assignedProjects = projectRepository.findByAssignedUser_Id(employee.getId());
-            // Beregn total arbejdstimer baseret på tildelte projekter (simuleret)
-            double totalHours = assignedProjects.size() * 8.0; // 8 timer per projekt
-            employee.setWorkHours(totalHours);
-        }
-        
+        List<User> employees = employeeService.getAllEmployeesWithWorkHours();
         model.addAttribute("employees", employees);
         return "employees";
     }
 
     @GetMapping("/{id}/edit-hours")
     public String showEditHoursForm(@PathVariable Long id, Model model) {
-        User employee = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        User employee = employeeService.getEmployeeById(id);
         model.addAttribute("employee", employee);
         return "edit-employee-hours";
     }
@@ -54,10 +38,7 @@ public class EmployeeController {
     public String updateWorkHours(@PathVariable Long id,
                                   @RequestParam Double workHours,
                                   RedirectAttributes redirectAttributes) {
-        User employee = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
-        employee.setWorkHours(workHours);
-        userRepository.save(employee);
+        employeeService.updateEmployeeWorkHours(id, workHours);
         redirectAttributes.addFlashAttribute("success", "Arbejdstimer opdateret succesfuldt!");
         return "redirect:/admin/employees";
     }

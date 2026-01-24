@@ -47,10 +47,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.
-                csrf(csrf -> csrf.disable())  // For development only, enable in production
+        http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/welcome", "/register", "/login", "/create-admin", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/welcome", "/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/svend/**").hasRole("SVEND")
                         .requestMatchers("/api/svend/**", "/api/dashboard/svend").hasRole("SVEND")
@@ -83,10 +83,7 @@ public class SecurityConfig {
                         String role = user.getRole() != null ? user.getRole().name() : "SVEND";
                         if ("USER".equals(role)) role = "SVEND";
                         logger.info("User found: {} with role: {}", user.getEmail(), role);
-                        logger.info("User password hash (first 20 chars): {}", 
-                                user.getPassword() != null && user.getPassword().length() > 20 
-                                        ? user.getPassword().substring(0, 20) + "..." 
-                                        : user.getPassword());
+                        // REMOVED PASSWORD LOGGING FOR SECURITY
                         
                         // Convert role to the format Spring Security expects (ROLE_ prefix)
                         String authority = "ROLE_" + role;

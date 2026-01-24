@@ -57,15 +57,23 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private WorkTypeRepository workTypeRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${admin.email:admin@workday.dk}")
+    private String adminEmail;
+
+    @org.springframework.beans.factory.annotation.Value("${admin.password:admin123}")
+    private String adminPassword;
+
+    @org.springframework.beans.factory.annotation.Value("${svend.email:svend@workday.dk}")
+    private String svendEmail;
+
+    @org.springframework.beans.factory.annotation.Value("${svend.password:svend123}")
+    private String svendPassword;
+
     @Override
     @Transactional
     public void run(String... args) throws Exception {
         try {
             logger.info("DataInitializer started - checking for admin user...");
-            String adminEmail = "admin@workday.dk";
-            String adminPassword = "admin123";
-            String svendEmail = "svend@workday.dk";
-            String svendPassword = "svend123";
 
             // Check if admin user already exists
             if (userRepository.findByEmail(adminEmail).isEmpty()) {

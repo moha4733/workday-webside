@@ -3,13 +3,14 @@
 Tak fordi du vil bidrage til Workday. Projektet er et privat hobbyprojekt, der fokuserer på enkelhed, praktisk funktionalitet og stabilitet. Følg nedenstående retningslinjer for at sikre ensartet kvalitet.
 
 ## Kom i gang lokalt
-- Krav: Java 17+ (Maven wrapper inkluderet)
+- Krav: Java 21+ (Maven wrapper inkluderet)
 - Hurtig start med H2 (standard - ingen ekstra setup):
   ```bash
   # Windows
   mvnw.cmd spring-boot:run
   
   # Linux/Mac
+  export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home
   ./mvnw spring-boot:run
   ```
   Åbn http://localhost:8080
@@ -75,6 +76,7 @@ Tak fordi du vil bidrage til Workday. Projektet er et privat hobbyprojekt, der f
   mvnw.cmd test
   
   # Linux/Mac
+  export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home
   ./mvnw test
   ```
 - Tests bruger automatisk H2 in-memory database (ingen ekstra konfiguration).

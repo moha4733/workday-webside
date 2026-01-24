@@ -4,11 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DayPlanDTO {
+    @jakarta.validation.constraints.NotNull(message = "Dato er påkrævet")
     private LocalDate date;
+    
     private Long projectId;
+    
     private String projectName;
+    
     private String address;
+    
     private String description;
+    
     private LocalTime startTime;
     public DayPlanDTO() {}
     public DayPlanDTO(LocalDate date, Long projectId, String projectName, String address, String description, LocalTime startTime) {

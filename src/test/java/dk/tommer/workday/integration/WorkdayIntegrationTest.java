@@ -19,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 // Integration tests: kører fuld application context med H2 og tester lag-samspil
 @SpringBootTest
@@ -53,15 +54,15 @@ class WorkdayIntegrationTest {
             userRepository.save(svend);
         }
     }
-    
     @Test
     @WithMockUser(username = "svend@workday.dk", roles = "SVEND")
     void createMaterialOrder_flow_savesToDatabase() throws Exception {
         long before = materialOrderRepository.count();
-        mockMvc.perform(post("/api/svend/material-order")
+        mockMvc.perform(post("/svend/material-order")
+                        .with(csrf())
                         .param("grossArea", "20.0")
                         .param("description", "Test material order"))
-                .andExpect(status().isOk());
+                .andExpect(status().is3xxRedirection()); // It redirects to dashboard on success
         long after = materialOrderRepository.count();
         assertThat(after).isEqualTo(before + 1);
     }
