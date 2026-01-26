@@ -45,6 +45,12 @@ public class HomeController {
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model){
+        // Get current user for profile
+        org.springframework.security.core.Authentication auth = 
+            org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User currentUser = userRepository.findByEmail(email).orElseThrow();
+        
         // Hent rigtig data
         List<Project> allProjects = projectRepository.findAll();
         List<Project> activeProjects = allProjects.stream()
@@ -60,6 +66,8 @@ public class HomeController {
                 .mapToDouble(p -> 8.0) // Simuleret: 8 timer per aktivt projekt
                 .sum();
         
+        model.addAttribute("userName", currentUser.getName());
+        model.addAttribute("profilePhotoPath", currentUser.getProfilePhotoPath());
         model.addAttribute("activeProjectsCount", activeProjects.size());
         model.addAttribute("totalProjectsCount", allProjects.size());
         model.addAttribute("totalHoursToday", (int)totalHoursToday);

@@ -1,149 +1,164 @@
 <!DOCTYPE html>
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <title>Svend Dashboard | Workday</title>
   <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
+
 <body>
-<div class="dashboard-wrapper">
-  <nav class="sidebar">
-    <h2>Workday</h2>
-    <ul>
-      <li><a th:href="@{/svend/dashboard}" class="active">Oversigt</a></li>
-      <li><a th:href="@{/svend/projects}">Projekter</a></li>
-      <li><a th:href="@{/svend/calculator}">Beregner</a></li>
-      <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
-      <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
-      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
-    </ul>
-  </nav>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/svend/dashboard}" class="active">Oversigt</a></li>
+        <li><a th:href="@{/svend/projects}">Projekter</a></li>
+        <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+        <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+        <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout"
+              style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log
+              ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
 
-  <main class="main-content">
-    <header>
-      <h1>Svend Dashboard</h1>
-      <p th:text="'Velkommen, ' + ${userName}">Velkommen</p>
-    </header>
+    <main class="main-content">
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>Svend Dashboard</h1>
+        </div>
+        <div
+          th:replace="~{fragments/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+        </div>
+      </header>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <h3>Dagens Projekt</h3>
-        <span class="number" th:text="${currentProject != null ? currentProject.name : 'Ingen'}">Ingen</span>
-        <div th:if="${currentProject != null && currentProject.startTime != null}" 
-             th:text="'Start kl. ' + ${#temporals.format(currentProject.startTime, 'HH:mm')}" 
-             style="margin-top:6px;color:#666;"></div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Dagens Projekt</h3>
+          <span class="number" th:text="${currentProject != null ? currentProject.name : 'Ingen'}">Ingen</span>
+          <div th:if="${currentProject != null && currentProject.startTime != null}"
+            th:text="'Start kl. ' + ${#temporals.format(currentProject.startTime, 'HH:mm')}"
+            style="margin-top:6px;color:#666;"></div>
+        </div>
+        <div class="stat-card">
+          <h3>Timer i dag</h3>
+          <span class="number" th:text="${dailyTotalHours}">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>Bestillinger</h3>
+          <span class="number" th:text="${latestOrderStatus}">Ingen</span>
+        </div>
       </div>
-      <div class="stat-card">
-        <h3>Timer i dag</h3>
-        <span class="number" th:text="${dailyTotalHours}">0</span>
-      </div>
-      <div class="stat-card">
-        <h3>Bestillinger</h3>
-        <span class="number" th:text="${latestOrderStatus}">Ingen</span>
-      </div>
-    </div>
 
-    <section class="table-section">
-      <h2>Mine Opgaver</h2>
-      <table>
-        <thead>
-        <tr>
-          <th>Projektnavn</th>
-          <th>Beskrivelse</th>
-          <th>Deadline</th>
-          <th>Handling</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${myProjects.isEmpty()}">
-          <td colspan="4" style="text-align: center; padding: 20px;">Ingen opgaver</td>
-        </tr>
-        <tr th:each="project : ${myProjects}">
-          <td th:text="${project.name}"></td>
-          <td th:text="${project.description ?: 'Ingen beskrivelse'}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
-          <td th:text="${project.startDate}"></td>
-          <td>
-            <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>
-            <a th:href="@{/svend/projects/{id}/photo(id=${project.id})}" class="btn-small">Tag Billede</a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </section>
+      <section class="table-section">
+        <h2>Mine Opgaver</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Projektnavn</th>
+              <th>Beskrivelse</th>
+              <th>Deadline</th>
+              <th>Handling</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${myProjects.isEmpty()}">
+              <td colspan="4" style="text-align: center; padding: 20px;">Ingen opgaver</td>
+            </tr>
+            <tr th:each="project : ${myProjects}">
+              <td th:text="${project.name}"></td>
+              <td th:text="${project.description ?: 'Ingen beskrivelse'}"
+                style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
+              <td th:text="${project.startDate}"></td>
+              <td>
+                <a th:href="@{/svend/projects/{id}/log-hours(id=${project.id})}" class="btn-small">Registrer Timer</a>
+                <a th:href="@{/svend/projects/{id}/photo(id=${project.id})}" class="btn-small">Tag Billede</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <section class="table-section">
-      <h2>Aktuelt Projekt</h2>
-      <div th:if="${currentProject == null}" style="padding: 12px;">Ingen dagsplan for i dag.</div>
-      <table th:if="${currentProject != null}">
-        <thead>
-        <tr>
-          <th>Navn</th>
-          <th>Adresse</th>
-          <th>Beskrivelse</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td th:text="${currentProject.name}"></td>
-          <td th:text="${currentProject.address}"></td>
-          <td th:text="${currentProject.description}"></td>
-        </tr>
-        </tbody>
-      </table>
-    </section>
+      <section class="table-section">
+        <h2>Aktuelt Projekt</h2>
+        <div th:if="${currentProject == null}" style="padding: 12px;">Ingen dagsplan for i dag.</div>
+        <table th:if="${currentProject != null}">
+          <thead>
+            <tr>
+              <th>Navn</th>
+              <th>Adresse</th>
+              <th>Beskrivelse</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td th:text="${currentProject.name}"></td>
+              <td th:text="${currentProject.address}"></td>
+              <td th:text="${currentProject.description}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <section class="table-section">
-      <h2>Kalender (næste 5 dage)</h2>
-      <table>
-        <thead>
-        <tr>
-          <th>Dato</th>
-          <th>Projekt</th>
-          <th>Adresse</th>
-          <th>Beskrivelse</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${calendarPreview.isEmpty()}">
-          <td colspan="4" style="text-align: center; padding: 20px;">Ingen planlagte dage</td>
-        </tr>
-        <tr th:each="dp : ${calendarPreview}">
-          <td th:text="${dp.date}"></td>
-          <td th:text="${dp.projectName ?: 'Ingen'}"></td>
-          <td th:text="${dp.address ?: ''}"></td>
-          <td th:text="${dp.description ?: ''}"></td>
-        </tr>
-        </tbody>
-      </table>
-    </section>
+      <section class="table-section">
+        <h2>Kalender (næste 5 dage)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Dato</th>
+              <th>Projekt</th>
+              <th>Adresse</th>
+              <th>Beskrivelse</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${calendarPreview.isEmpty()}">
+              <td colspan="4" style="text-align: center; padding: 20px;">Ingen planlagte dage</td>
+            </tr>
+            <tr th:each="dp : ${calendarPreview}">
+              <td th:text="${dp.date}"></td>
+              <td th:text="${dp.projectName ?: 'Ingen'}"></td>
+              <td th:text="${dp.address ?: ''}"></td>
+              <td th:text="${dp.description ?: ''}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <section class="table-section">
-      <h2>Materialestatus (seneste 3)</h2>
-      <table>
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Beskrivelse</th>
-          <th>Status</th>
-          <th>Oprettet</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${materialStatus.isEmpty()}">
-          <td colspan="4" style="text-align: center; padding: 20px;">Ingen materialebestillinger</td>
-        </tr>
-        <tr th:each="mo : ${materialStatus}">
-          <td th:text="${mo.id}"></td>
-          <td th:text="${mo.description ?: ''}"></td>
-          <td>
-            <span class="status" th:text="${mo.status}"></span>
-          </td>
-          <td th:text="${mo.createdAt != null ? #temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm') : ''}"></td>
-        </tr>
-        </tbody>
-      </table>
-    </section>
-  </main>
-</div>
+      <section class="table-section">
+        <h2>Materialestatus (seneste 3)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Beskrivelse</th>
+              <th>Status</th>
+              <th>Oprettet</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${materialStatus.isEmpty()}">
+              <td colspan="4" style="text-align: center; padding: 20px;">Ingen materialebestillinger</td>
+            </tr>
+            <tr th:each="mo : ${materialStatus}">
+              <td th:text="${mo.id}"></td>
+              <td th:text="${mo.description ?: ''}"></td>
+              <td>
+                <span class="status" th:text="${mo.status}"></span>
+              </td>
+              <td th:text="${mo.createdAt != null ? #temporals.format(mo.createdAt, 'yyyy-MM-dd HH:mm') : ''}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
 </body>
+
 </html>

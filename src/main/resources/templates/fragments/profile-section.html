@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <style>
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-photo-container {
+            display: inline-block;
+        }
+
+        .profile-photo-container.clickable {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .profile-photo-container.clickable:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-photo-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-welcome-text {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .profile-welcome-text strong {
+            display: block;
+            font-size: 15px;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Profile Header Fragment -->
+    <div th:fragment="profile-header" class="profile-header">
+        <!-- Clickable only if no photo uploaded -->
+        <a th:if="${profilePhotoPath == null}" th:href="@{/profile}" class="profile-photo-container clickable">
+            <div class="profile-photo-placeholder"
+                th:text="${userName != null ? userName.substring(0,1).toUpperCase() : 'U'}">
+            </div>
+        </a>
+
+        <!-- Not clickable if photo exists -->
+        <div th:if="${profilePhotoPath != null}" class="profile-photo-container">
+            <img th:src="@{'/uploads/profiles/' + ${profilePhotoPath}}" alt="Profilbillede" class="profile-photo">
+        </div>
+
+        <div class="profile-welcome-text">
+            <strong th:text="${userName != null ? userName : 'Bruger'}">Navn</strong>
+            <span>Velkommen tilbage!</span>
+        </div>
+    </div>
+</body>
+
+</html>

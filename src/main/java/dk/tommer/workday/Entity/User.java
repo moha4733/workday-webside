@@ -23,6 +23,9 @@ public class User {
     @Column(name = "work_hours", nullable = false)
     private Double workHours = 0.0;
 
+    @Column(name = "profile_photo_path")
+    private String profilePhotoPath;
+
     public String getName() {
         return name;
     }
@@ -69,5 +72,13 @@ public class User {
 
     public void setWorkHours(Double workHours) {
         this.workHours = workHours;
+    }
+
+    public String getProfilePhotoPath() {
+        return profilePhotoPath;
+    }
+
+    public void setProfilePhotoPath(String profilePhotoPath) {
+        this.profilePhotoPath = profilePhotoPath;
     }
 }

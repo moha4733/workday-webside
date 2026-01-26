@@ -101,6 +101,7 @@ public class SvendDashboardController {
         Double dailyTotalHours = workLogRepository.sumHoursByUserIdAndDate(userId, today);
 
         model.addAttribute("userName", user.getName());
+        model.addAttribute("profilePhotoPath", user.getProfilePhotoPath());
         model.addAttribute("currentProject", currentProject);
         model.addAttribute("calendarPreview", calendarPreview);
         model.addAttribute("materialStatus", materialStatus);

@@ -1,83 +1,101 @@
 <!DOCTYPE html>
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard | Workday</title>
   <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
+
 <body>
-<div class="dashboard-wrapper">
-  <nav class="sidebar">
-    <h2>Workday</h2>
-    <ul>
-      <li><a href="#" class="active">Oversigt</a></li>
-      <li><a th:href="@{/admin/projects}">Projekter</a></li>
-      <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
-      <li><a th:href="@{/admin/orders}">Bestillinger</a></li>
-      <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
-      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
-    </ul>
-  </nav>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a href="#" class="active">Oversigt</a></li>
+        <li><a th:href="@{/admin/projects}">Projekter</a></li>
+        <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+        <li><a th:href="@{/admin/orders}">Bestillinger</a></li>
+        <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout"
+              style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log
+              ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
 
-  <main class="main-content">
-    <header>
-      <h1>Admin Dashboard</h1>
-      <p>Velkommen tilbage, Mester!</p>
-    </header>
+    <main class="main-content">
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>Admin Dashboard</h1>
+        </div>
+        <div
+          th:replace="~{fragments/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+        </div>
+      </header>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <h3>Aktive Projekter</h3>
-        <span class="number" th:text="${activeProjectsCount}">0</span>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Aktive Projekter</h3>
+          <span class="number" th:text="${activeProjectsCount}">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>Totale Projekter</h3>
+          <span class="number" th:text="${totalProjectsCount}">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>Timer i dag</h3>
+          <span class="number" th:text="${totalHoursToday}">0</span>
+        </div>
       </div>
-      <div class="stat-card">
-        <h3>Totale Projekter</h3>
-        <span class="number" th:text="${totalProjectsCount}">0</span>
-      </div>
-      <div class="stat-card">
-        <h3>Timer i dag</h3>
-        <span class="number" th:text="${totalHoursToday}">0</span>
-      </div>
-    </div>
 
-    <section class="table-section">
-      <h2>Seneste Projekter</h2>
-      <table>
-        <thead>
-        <tr>
-          <th>Projektnavn</th>
-          <th>Beskrivelse</th>
-          <th>Prioritet</th>
-          <th>Starttid</th>
-          <th>Status</th>
-          <th>Tildelt til</th>
-          <th>Handling</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${recentProjects.isEmpty()}">
-          <td colspan="5" style="text-align: center; padding: 20px;">
-            Ingen projekter endnu. <a th:href="@{/admin/projects/create}">Opret dit første projekt</a>
-          </td>
-        </tr>
-        <tr th:each="project : ${recentProjects}">
-          <td th:text="${project.name}"></td>
-          <td th:text="${project.description ?: 'Ingen beskrivelse'}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
-          <td th:text="${project.priority != null ? #strings.replace(project.priority.name(), '_', ' ') : 'Ikke sat'}"></td>
-          <td th:text="${project.startTime != null ? #temporals.format(project.startTime, 'HH:mm') : 'Ikke sat'}"></td>
-          <td>
-            <span class="status" th:classappend="${project.status.name() == 'IN_PROGRESS' ? 'progress' : 
+      <section class="table-section">
+        <h2>Seneste Projekter</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Projektnavn</th>
+              <th>Beskrivelse</th>
+              <th>Prioritet</th>
+              <th>Starttid</th>
+              <th>Status</th>
+              <th>Tildelt til</th>
+              <th>Handling</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${recentProjects.isEmpty()}">
+              <td colspan="5" style="text-align: center; padding: 20px;">
+                Ingen projekter endnu. <a th:href="@{/admin/projects/create}">Opret dit første projekt</a>
+              </td>
+            </tr>
+            <tr th:each="project : ${recentProjects}">
+              <td th:text="${project.name}"></td>
+              <td th:text="${project.description ?: 'Ingen beskrivelse'}"
+                style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
+              <td
+                th:text="${project.priority != null ? #strings.replace(project.priority.name(), '_', ' ') : 'Ikke sat'}">
+              </td>
+              <td th:text="${project.startTime != null ? #temporals.format(project.startTime, 'HH:mm') : 'Ikke sat'}">
+              </td>
+              <td>
+                <span class="status" th:classappend="${project.status.name() == 'IN_PROGRESS' ? 'progress' : 
                                                       project.status.name() == 'FINISHED' ? 'finished' : 
                                                       project.status.name() == 'ON_HOLD' ? 'pending' : 'planned'}"
                   th:text="${#strings.replace(project.status.name(), '_', ' ')}"></span>
-          </td>
-          <td th:text="${project.assignedUser?.name ?: 'Ikke tildelt'}"></td>
-          <td><a th:href="@{/admin/projects/{id}/edit(id=${project.id})}" class="btn-small">Se mere</a></td>
-        </tr>
-        </tbody>
-      </table>
-    </section>
-  </main>
-</div>
+              </td>
+              <td th:text="${project.assignedUser?.name ?: 'Ikke tildelt'}"></td>
+              <td><a th:href="@{/admin/projects/{id}/edit(id=${project.id})}" class="btn-small">Se mere</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
 </body>
+
 </html>
