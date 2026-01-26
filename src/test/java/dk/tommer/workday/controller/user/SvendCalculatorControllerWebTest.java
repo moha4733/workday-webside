@@ -1,10 +1,11 @@
-package dk.tommer.workday.controller;
+package dk.tommer.workday.controller.user;
 
 import dk.tommer.workday.dto.CalculationResultDTO;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.MaterialOrderRepository;
 import dk.tommer.workday.repository.UserRepository;
-import dk.tommer.workday.service.MaterialCalculatorService;
+import dk.tommer.workday.Service.MaterialCalculatorService;
+import dk.tommer.workday.controller.user.SvendCalculatorController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

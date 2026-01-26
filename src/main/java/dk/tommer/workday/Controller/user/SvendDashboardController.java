@@ -1,4 +1,4 @@
-package dk.tommer.workday.controller;
+package dk.tommer.workday.controller.user;
 
 import dk.tommer.workday.dto.DayPlanDTO;
 import dk.tommer.workday.dto.MaterialOrderDTO;

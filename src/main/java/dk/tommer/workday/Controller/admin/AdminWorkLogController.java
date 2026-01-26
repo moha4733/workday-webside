@@ -1,4 +1,4 @@
-package dk.tommer.workday.controller;
+package dk.tommer.workday.controller.admin;
 
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.entity.WorkLog;

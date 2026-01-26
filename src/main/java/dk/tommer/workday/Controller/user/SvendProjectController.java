@@ -1,4 +1,4 @@
-package dk.tommer.workday.controller;
+package dk.tommer.workday.controller.user;
 
 import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.ProjectStatus;

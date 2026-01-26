@@ -1,0 +1,179 @@
+package dk.tommer.workday.controller.user;
+
+import dk.tommer.workday.dto.CalculationResultDTO;
+import dk.tommer.workday.entity.User;
+import dk.tommer.workday.repository.MaterialOrderRepository;
+import dk.tommer.workday.repository.UserRepository;
+import dk.tommer.workday.Service.MaterialCalculatorService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureWebMvc
+@ActiveProfiles("test")
+class SvendCalculatorControllerTest {
+
+    @Autowired
+    private WebApplicationContext wac;
+
+    @MockBean
+    private MaterialCalculatorService materialCalculatorService;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        
+        // Mock user
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setName("Test Svend");
+        mockUser.setEmail("svend@workday.dk");
+        
+        when(userRepository.findByEmail("svend@workday.dk"))
+            .thenReturn(java.util.Optional.of(mockUser));
+    }
+
+    @Test
+    @WithMockUser(username = "svend@workday.dk", roles = "SVEND")
+    void showCalculatorPage_returnsCalculatorView() throws Exception {
+        mockMvc.perform(get("/svend/calculator"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/svend-calculator"))
+                .andExpect(model().attributeExists("userName"));
+    }
+
+    @Test
+    @WithMockUser(username = "svend@workday.dk", roles = "SVEND")
+    void calculateFlooring_validInput_returnsCalculationResult() throws Exception {
+        // Arrange
+        CalculationResultDTO expectedResult = new CalculationResultDTO();
+        expectedResult.setType("floor");
+        expectedResult.setNetArea(12.0);
+        expectedResult.setWasteAmount(1.2);
+        expectedResult.setGrossArea(13.2);
+        expectedResult.setRecommendedOrderQuantity(3);
+
+        when(materialCalculatorService.calculateFlooring(any(Double.class), any(Double.class), any(Double.class), any(Double.class)))
+            .thenReturn(expectedResult);
+
+        // Act & Assert
+        mockMvc.perform(post("/svend/calculator/flooring")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("length", "4.0")
+                        .param("width", "3.0")
+                        .param("wastePercentage", "10.0")
+                        .param("packageSize", "5.0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("floor"))
+                .andExpect(jsonPath("$.netArea").value(12.0))
+                .andExpect(jsonPath("$.grossArea").value(13.2))
+                .andExpect(jsonPath("$.recommendedOrderQuantity").value(3));
+    }
+
+    @Test
+    @WithMockUser(username = "svend@workday.dk", roles = "SVEND")
+    void calculateWindowTrim_validInput_returnsCalculationResult() throws Exception {
+        // Arrange
+        CalculationResultDTO expectedResult = new CalculationResultDTO();
+        expectedResult.setType("windows");
+        expectedResult.setLinearMeters(9.9);
+
+        when(materialCalculatorService.calculateWindowTrim(any(Double.class), any(Double.class), any(Integer.class), any(Double.class)))
+            .thenReturn(expectedResult);
+
+        // Act & Assert
+        mockMvc.perform(post("/svend/calculator/window-trim")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("height", "1.0")
+                        .param("width", "0.5")
+                        .param("count", "3")
+                        .param("wastePercentage", "10.0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("windows"))
+                .andExpect(jsonPath("$.linearMeters").value(9.9));
+    }
+
+    @Test
+    @WithMockUser(username = "svend@workday.dk", roles = "SVEND")
+    void calculateInsulation_validInput_returnsCalculationResult() throws Exception {
+        // Arrange
+        CalculationResultDTO expectedResult = new CalculationResultDTO();
+        expectedResult.setType("insulation");
+        expectedResult.setInsulationArea(6.0);
+        expectedResult.setBoardCount(3);
+
+        when(materialCalculatorService.calculateInsulation(any(Double.class), any(Double.class)))
+            .thenReturn(expectedResult);
+
+        // Act & Assert
+        mockMvc.perform(post("/svend/calculator/insulation")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("length", "3.0")
+                        .param("width", "2.0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("insulation"))
+                .andExpect(jsonPath("$.insulationArea").value(6.0))
+                .andExpect(jsonPath("$.boardCount").value(3));
+    }
+
+    @Test
+    @WithMockUser(username = "svend@workday.dk", roles = "SVEND")
+    void calculateBattens_validInput_returnsCalculationResult() throws Exception {
+        // Arrange
+        CalculationResultDTO expectedResult = new CalculationResultDTO();
+        expectedResult.setType("battens");
+        expectedResult.setLinearMeters(100.0);
+
+        when(materialCalculatorService.calculateBattens(any(Double.class), any(Double.class)))
+            .thenReturn(expectedResult);
+
+        // Act & Assert
+        mockMvc.perform(post("/svend/calculator/battens")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("length", "30.0")
+                        .param("spacing", "0.3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("battens"))
+                .andExpect(jsonPath("$.linearMeters").value(100.0));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@workday.dk", roles = "ADMIN")
+    void showCalculatorPage_asAdmin_returnsForbidden() throws Exception {
+        mockMvc.perform(get("/svend/calculator"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void showCalculatorPage_unauthenticated_returnsRedirect() throws Exception {
+        mockMvc.perform(get("/svend/calculator"))
+                .andExpect(status().is3xxRedirection());
+    }
+}

@@ -15,6 +15,9 @@ public interface WorkLogRepository extends JpaRepository<WorkLog, Long> {
     @Query("select coalesce(sum(w.hours),0) from WorkLog w where w.user.id = :userId and w.date = :date")
     Double sumHoursByUserIdAndDate(Long userId, LocalDate date);
     
+    @Query("select coalesce(sum(w.hours),0) from WorkLog w where w.user.id = :userId and w.date between :startDate and :endDate")
+    Double sumHoursByUserAndDateRange(Long userId, LocalDate startDate, LocalDate endDate);
+    
     List<WorkLog> findByUserOrderByDateDesc(User user);
     
     List<WorkLog> findByStatus(WorkLogStatus status);

@@ -83,7 +83,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.14.12</version>
+            <version>1.14.13</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -119,7 +119,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
+                <version>0.8.12</version>
                 <executions>
                     <!-- Prepare agent before tests -->
                     <execution>
