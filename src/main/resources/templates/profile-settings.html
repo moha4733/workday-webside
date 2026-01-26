@@ -156,6 +156,13 @@
 
                     <div class="btn-group">
                         <button type="submit" class="btn-primary">Upload billede</button>
+                        <a th:if="${user.profilePhotoPath != null}" 
+                           th:href="@{/profile/photo/delete}" 
+                           onclick="return confirm('Er du sikker på, at du vil slette dit profilbillede?')"
+                           class="btn-danger"
+                           style="text-decoration: none; display: inline-block; padding: 10px 20px; background-color: #dc3545; color: white; border-radius: 4px;">
+                            Slet billede
+                        </a>
                         <a th:href="${user.role.name() == 'ADMIN' ? '/admin/dashboard' : '/svend/dashboard'}"
                             class="btn-secondary"
                             style="text-decoration: none; display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; border-radius: 4px;">

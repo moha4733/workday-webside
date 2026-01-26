@@ -91,4 +91,28 @@ public class ProfileController {
 
         return "redirect:/profile";
     }
+
+    @PostMapping("/photo/delete")
+    public String deletePhoto(RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        
+        // Delete photo file if exists
+        if (user.getProfilePhotoPath() != null) {
+            try {
+                Path oldPhoto = Paths.get(UPLOAD_DIR + user.getProfilePhotoPath());
+                Files.deleteIfExists(oldPhoto);
+            } catch (IOException e) {
+                // Ignore if photo doesn't exist
+            }
+        }
+        
+        // Update user profile
+        user.setProfilePhotoPath(null);
+        userRepository.save(user);
+        
+        redirectAttributes.addFlashAttribute("success", "Profilbillede slettet!");
+        return "redirect:/profile";
+    }
 }

@@ -1,4 +1,4 @@
-package dk.tommer.workday.service;
+package dk.tommer.workday.Service;
 
 import dk.tommer.workday.dto.CalculationResultDTO;
 import org.springframework.stereotype.Service;

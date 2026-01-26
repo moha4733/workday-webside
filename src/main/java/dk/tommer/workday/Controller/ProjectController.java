@@ -7,7 +7,7 @@ import dk.tommer.workday.entity.User;
 import dk.tommer.workday.entity.WorkType;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.repository.WorkTypeRepository;
-import dk.tommer.workday.service.ProjectService;
+import dk.tommer.workday.Service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fejl | Workday</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <main class="main-content">
+            <div style="text-align: center; padding: 50px;">
+                <h1>Der opstod en fejl</h1>
+                <div th:if="${error}" style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p th:text="${error}"></p>
+                </div>
+                <a href="/svend/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+                    Tilbage til dashboard
+                </a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

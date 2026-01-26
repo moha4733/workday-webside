@@ -4,7 +4,7 @@ import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.Role;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.ProjectRepository;
-import dk.tommer.workday.service.EmployeeService;
+import dk.tommer.workday.Service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

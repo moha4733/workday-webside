@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Timer Administration | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <style>
+    .status-pending {
+      background-color: #ffc107;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .status-approved {
+      background-color: #28a745;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .status-rejected {
+      background-color: #dc3545;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .btn-small {
+      padding: 4px 8px;
+      font-size: 11px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-approve {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .btn-reject {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .btn-pending {
+      background-color: #ffc107;
+      color: black;
+    }
+    
+    .comment {
+      font-size: 12px;
+      color: #666;
+      max-width: 200px;
+    }
+    
+    .reject-form {
+      display: none;
+      margin-top: 10px;
+    }
+    
+    .reject-form textarea {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    
+    .reject-form button {
+      margin-top: 5px;
+      padding: 3px 8px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+        <li><a th:href="@{/admin/projects}">Projekter</a></li>
+        <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+        <li><a th:href="@{/admin/orders}">Bestillinger</a></li>
+        <li><a th:href="@{/admin/worklogs}" class="active">Timer</a></li>
+        <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout"
+              style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log
+              ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>Timer Administration</h1>
+        </div>
+        <div
+          th:replace="~{fragments/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+        </div>
+      </header>
+
+      <section class="table-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2>Alle Registrerede Timer</h2>
+          <a th:href="@{/admin/worklogs/pdf}" class="btn-download" style="background-color: #007bff; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+            Download PDF (Godkendte Timer)
+          </a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Svend</th>
+              <th>Dato</th>
+              <th>Projekt</th>
+              <th>Timer</th>
+              <th>Status</th>
+              <th>Kommentar</th>
+              <th>Handlinger</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${workLogs.isEmpty()}">
+              <td colspan="7" style="text-align: center; padding: 20px;">
+                Ingen timer registreret endnu.
+              </td>
+            </tr>
+            <tr th:each="workLog : ${workLogs}">
+              <td th:text="${workLog.user.name}"></td>
+              <td th:text="${#temporals.format(workLog.date, 'dd-MM-yyyy')}"></td>
+              <td th:text="${workLog.project.name}"></td>
+              <td th:text="${workLog.hours}"></td>
+              <td>
+                <span th:if="${workLog.status.name() == 'PENDING'}" class="status-pending">Afventer</span>
+                <span th:if="${workLog.status.name() == 'APPROVED'}" class="status-approved">Godkendt</span>
+                <span th:if="${workLog.status.name() == 'REJECTED'}" class="status-rejected">Afvist</span>
+              </td>
+              <td>
+                <div th:if="${workLog.adminComment}" class="comment" th:text="${workLog.adminComment}"></div>
+                <div th:unless="${workLog.adminComment}" class="comment">-</div>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <form th:action="@{/admin/worklogs/{id}/approve(id=${workLog.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn-small btn-approve">Godkend</button>
+                  </form>
+                  
+                  <button th:if="${workLog.status.name() != 'REJECTED'}" 
+                          class="btn-small btn-reject"
+                          th:onclick="'showRejectForm(' + ${workLog.id} + ')'">
+                    Afvis
+                  </button>
+                  
+                  <form th:if="${workLog.status.name() != 'PENDING'}" 
+                        th:action="@{/admin/worklogs/{id}/pending(id=${workLog.id})}" 
+                        method="post" style="display: inline;">
+                    <button type="submit" class="btn-small btn-pending">Afvent</button>
+                  </form>
+                </div>
+                
+                <div th:id="'reject-form-' + ${workLog.id}" class="reject-form">
+                  <form th:action="@{/admin/worklogs/{id}/reject(id=${workLog.id})}" method="post">
+                    <textarea name="comment" placeholder="Kommentar til svend (valgfrit)"></textarea>
+                    <div>
+                      <button type="submit" class="btn-small btn-reject">Bekræft afvisning</button>
+                      <button type="button" class="btn-small" th:onclick="'hideRejectForm(' + ${workLog.id} + ')'">Annuller</button>
+                    </div>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function showRejectForm(id) {
+      document.getElementById('reject-form-' + id).style.display = 'block';
+    }
+    
+    function hideRejectForm(id) {
+      document.getElementById('reject-form-' + id).style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>

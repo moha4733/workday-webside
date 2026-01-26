@@ -12,7 +12,7 @@ import dk.tommer.workday.repository.MaterialOrderRepository;
 import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.repository.WorkLogRepository;
-import dk.tommer.workday.service.MaterialCalculatorService;
+import dk.tommer.workday.Service.MaterialCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

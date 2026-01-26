@@ -6,7 +6,7 @@ import dk.tommer.workday.entity.Role;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.UserRepository;
-import dk.tommer.workday.service.UserService;
+import dk.tommer.workday.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
