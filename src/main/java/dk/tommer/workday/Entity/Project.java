@@ -1,4 +1,4 @@
-package dk.tommer.workday.entity;
+package dk.tommer.workday.Entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

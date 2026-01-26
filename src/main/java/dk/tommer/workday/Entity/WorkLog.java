@@ -1,4 +1,4 @@
-package dk.tommer.workday.entity;
+package dk.tommer.workday.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -24,6 +24,7 @@ public class WorkLog {
     }
     public void setId(Long id) {
         this.id = id;
+    }
     }
     public User getUser() {
         return user;

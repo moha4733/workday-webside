@@ -1,4 +1,4 @@
-package dk.tommer.workday.controller;
+package dk.tommer.workday.Controller;
 
 import dk.tommer.workday.entity.MaterialOrder;
 import dk.tommer.workday.entity.Project;
