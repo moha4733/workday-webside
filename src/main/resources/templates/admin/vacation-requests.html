@@ -10,17 +10,17 @@
     <nav class="sidebar">
       <h2>Workday</h2>
       <ul>
-        <li><a th:href="@{/admin/dashboard}"><span>📊</span>Oversigt</a></li>
-        <li><a th:href="@{/admin/projects}"><span>📋</span>Projekter</a></li>
-        <li><a th:href="@{/admin/employees}"><span>👥</span>Medarbejdere</a></li>
-        <li><a th:href="@{/admin/orders}"><span>📦</span>Bestillinger</a></li>
-        <li><a th:href="@{/admin/worklogs}"><span>⏱️</span>Timer</a></li>
-        <li><a href="#" class="active"><span>🏖️</span>Ferieønsker</a></li>
-        <li><a th:href="@{/admin/settings}"><span>⚙️</span>Indstillinger</a></li>
+        <li><a th:href="@{/admin/dashboard}"><span></span>Oversigt</a></li>
+        <li><a th:href="@{/admin/projects}"><span></span>Projekter</a></li>
+        <li><a th:href="@{/admin/employees}"><span></span>Medarbejdere</a></li>
+        <li><a th:href="@{/admin/orders}"><span></span>Bestillinger</a></li>
+        <li><a th:href="@{/admin/worklogs}"><span></span>Timer</a></li>
+        <li><a href="#" class="active"><span></span>Ferieønsker</a></li>
+        <li><a th:href="@{/admin/settings}"><span></span>Indstillinger</a></li>
         <li>
           <form th:action="@{/logout}" method="post" style="margin: 0;">
             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <button type="submit" class="logout" style="background: none; border: none; color: #ff7675; cursor: pointer; padding: 14px 16px; text-align: left; width: 100%; font-size: 16px; display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;"><span>🚪</span>Log ud</button>
+            <button type="submit" class="logout" style="background: none; border: none; color: #ff7675; cursor: pointer; padding: 14px 16px; text-align: left; width: 100%; font-size: 16px; display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;"><span> </span>Log ud</button>
           </form>
         </li>
       </ul>
