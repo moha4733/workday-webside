@@ -43,6 +43,17 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; color: #3
 .sidebar ul li a span {
     font-size: 18px;
     flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar ul li a span svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
 }
 
 .sidebar ul li a::before {

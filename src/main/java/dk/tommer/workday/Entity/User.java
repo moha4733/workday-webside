@@ -27,6 +27,9 @@ public class User {
     @Column(name = "profile_photo_path")
     private String profilePhotoPath;
 
+    @Column(name = "phone")
+    private String phone;
+
     public String getName() {
         return name;
     }
@@ -81,5 +84,13 @@ public class User {
 
     public void setProfilePhotoPath(String profilePhotoPath) {
         this.profilePhotoPath = profilePhotoPath;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

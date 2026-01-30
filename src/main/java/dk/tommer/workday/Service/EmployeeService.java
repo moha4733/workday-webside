@@ -1,16 +1,22 @@
 package dk.tommer.workday.Service;
 
+import dk.tommer.workday.entity.DayPlan;
+import dk.tommer.workday.entity.Project;
 import dk.tommer.workday.entity.Role;
 import dk.tommer.workday.entity.User;
 import dk.tommer.workday.entity.WorkLog;
 import dk.tommer.workday.entity.WorkLogStatus;
+import dk.tommer.workday.repository.DayPlanRepository;
+import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.repository.WorkLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +27,12 @@ public class EmployeeService {
 
     @Autowired
     private WorkLogRepository workLogRepository;
+
+    @Autowired
+    private DayPlanRepository dayPlanRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     public List<User> getAllEmployeesWithWorkHours() {
         // Hent alle brugere med SVEND eller LÆRLING rolle (medarbejdere)
@@ -48,6 +60,26 @@ public class EmployeeService {
             employee.setWorkHours(totalHours);
         }
         return employees;
+    }
+
+    public Project getTodayProject(Long userId) {
+        LocalDate today = LocalDate.now();
+        // Først prøv at finde i DayPlan
+        Optional<DayPlan> todayPlan = dayPlanRepository.findFirstByUser_IdAndDateOrderByDateAsc(userId, today);
+        if (todayPlan.isPresent() && todayPlan.get().getProject() != null) {
+            return todayPlan.get().getProject();
+        }
+        // Hvis ikke i DayPlan, find projekt i gang
+        List<Project> assignedProjects = projectRepository.findByAssignedUser_Id(userId);
+        return assignedProjects.stream()
+                .filter(p -> p.getStatus() == dk.tommer.workday.entity.ProjectStatus.IN_PROGRESS)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<Project> getAllProjectsForEmployee(Long userId) {
+        // Hent alle projekter medarbejderen har været tilknyttet til
+        return projectRepository.findByAssignedUser_Id(userId);
     }
     
     public double getTotalWorkHours(Long userId) {

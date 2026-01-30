@@ -21,11 +21,51 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public String listEmployees(Model model) {
+    public String listEmployees(@RequestParam(required = false) String search, Model model) {
         List<User> employees = employeeService.getAllEmployeesWithWorkHours();
+        
+        // Filtrer efter søgning hvis angivet
+        if (search != null && !search.trim().isEmpty()) {
+            String searchLower = search.toLowerCase().trim();
+            employees = employees.stream()
+                    .filter(user -> (user.getName() != null && user.getName().toLowerCase().contains(searchLower)) ||
+                               (user.getEmail() != null && user.getEmail().toLowerCase().contains(searchLower)))
+                    .toList();
+        }
+        
         model.addAttribute("employees", employees);
         model.addAttribute("employeeService", employeeService);
+        model.addAttribute("searchQuery", search);
         return "admin/employees";
+    }
+
+    @GetMapping("/{id}/projects")
+    public String viewEmployeeProjects(@PathVariable Long id,
+                                       @RequestParam(required = false) String startDate,
+                                       @RequestParam(required = false) String endDate,
+                                       Model model) {
+        User employee = employeeService.getEmployeeById(id);
+        List<Project> projects = employeeService.getAllProjectsForEmployee(id);
+        
+        // Filtrer efter dato hvis angivet
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            java.time.LocalDate start = java.time.LocalDate.parse(startDate);
+            projects = projects.stream()
+                    .filter(p -> p.getStartDate() != null && !p.getStartDate().isBefore(start))
+                    .toList();
+        }
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            java.time.LocalDate end = java.time.LocalDate.parse(endDate);
+            projects = projects.stream()
+                    .filter(p -> p.getStartDate() != null && !p.getStartDate().isAfter(end))
+                    .toList();
+        }
+        
+        model.addAttribute("employee", employee);
+        model.addAttribute("projects", projects);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        return "admin/employee-projects";
     }
 
     @GetMapping("/{id}/edit-hours")
