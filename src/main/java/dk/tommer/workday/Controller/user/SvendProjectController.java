@@ -134,6 +134,7 @@ public class SvendProjectController {
     public String submitLogHours(@PathVariable Long id,
                                  @RequestParam Double hours,
                                  @RequestParam(required = false) LocalDate date,
+                                 @RequestParam(required = false) Integer breakMinutes,
                                  RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -152,6 +153,9 @@ public class SvendProjectController {
         wl.setProject(project);
         wl.setDate(date != null ? date : LocalDate.now());
         wl.setHours(hours);
+        if (breakMinutes != null && breakMinutes > 0) {
+            wl.setBreakMinutes(breakMinutes);
+        }
         workLogRepository.save(wl);
         redirectAttributes.addFlashAttribute("success", "Timer registreret: " + hours + " t (" + (date != null ? date : LocalDate.now()) + ")");
         return "redirect:/svend/dashboard";

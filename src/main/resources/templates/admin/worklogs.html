@@ -132,6 +132,7 @@
               <th>Dato</th>
               <th>Projekt</th>
               <th>Timer</th>
+              <th>Pause</th>
               <th>Status</th>
               <th>Kommentar</th>
               <th>Handlinger</th>
@@ -139,7 +140,7 @@
           </thead>
           <tbody>
             <tr th:if="${workLogs.isEmpty()}">
-              <td colspan="7" style="text-align: center; padding: 20px;">
+              <td colspan="8" style="text-align: center; padding: 20px;">
                 Ingen timer registreret endnu.
               </td>
             </tr>
@@ -147,7 +148,11 @@
               <td th:text="${workLog.user.name}"></td>
               <td th:text="${#temporals.format(workLog.date, 'dd-MM-yyyy')}"></td>
               <td th:text="${workLog.project.name}"></td>
-              <td th:text="${workLog.hours}"></td>
+              <td th:text="${workLog.hours} + ' t'"></td>
+              <td>
+                <span th:if="${workLog.breakMinutes != null and workLog.breakMinutes > 0}" th:text="${workLog.breakMinutes} + ' min'"></span>
+                <span th:unless="${workLog.breakMinutes != null and workLog.breakMinutes > 0}">-</span>
+              </td>
               <td>
                 <span th:if="${workLog.status.name() == 'PENDING'}" class="status-pending">Afventer</span>
                 <span th:if="${workLog.status.name() == 'APPROVED'}" class="status-approved">Godkendt</span>

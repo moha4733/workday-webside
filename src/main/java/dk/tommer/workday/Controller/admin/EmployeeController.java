@@ -24,6 +24,7 @@ public class EmployeeController {
     public String listEmployees(Model model) {
         List<User> employees = employeeService.getAllEmployeesWithWorkHours();
         model.addAttribute("employees", employees);
+        model.addAttribute("employeeService", employeeService);
         return "admin/employees";
     }
 

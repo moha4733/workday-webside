@@ -35,12 +35,13 @@
           <th>Email</th>
           <th>Rolle</th>
           <th>Arbejdstimer</th>
+          <th>Frokostpause</th>
           <th>Handlinger</th>
         </tr>
         </thead>
         <tbody>
         <tr th:if="${employees.isEmpty()}">
-          <td colspan="5" style="text-align: center; padding: 20px;">
+          <td colspan="6" style="text-align: center; padding: 20px;">
             Ingen medarbejdere endnu.
           </td>
         </tr>
@@ -50,7 +51,14 @@
           <td>
             <span class="status" th:text="${#strings.replace(employee.role.name(), '_', ' ')}"></span>
           </td>
-          <td th:text="${#numbers.formatDecimal(employee.workHours, 1, 1)} + ' timer'">0 timer</td>
+          <td>
+            <strong th:text="${#numbers.formatDecimal(employeeService.getTotalWorkHours(employee.id), 1, 1)} + ' timer'">0 timer</strong>
+          </td>
+          <td>
+            <span th:if="${employeeService.getTotalBreakMinutes(employee.id) > 0}" 
+                  th:text="${employeeService.getTotalBreakMinutes(employee.id)} + ' min (' + ${#numbers.formatDecimal(employeeService.getTotalBreakHours(employee.id), 1, 2)} + ' timer)'"></span>
+            <span th:unless="${employeeService.getTotalBreakMinutes(employee.id) > 0}">-</span>
+          </td>
           <td>
             <a th:href="@{/admin/employees/{id}/edit-hours(id=${employee.id})}" class="btn-small" style="background-color: #2196F3;">Rediger timer</a>
           </td>

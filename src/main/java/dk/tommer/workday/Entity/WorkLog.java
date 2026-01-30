@@ -24,6 +24,9 @@ public class WorkLog {
     @Column(nullable = false)
     private Double hours;
     
+    @Column(name = "break_minutes")
+    private Integer breakMinutes;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WorkLogStatus status = WorkLogStatus.PENDING;
@@ -69,6 +72,14 @@ public class WorkLog {
     
     public void setHours(Double hours) {
         this.hours = hours;
+    }
+    
+    public Integer getBreakMinutes() {
+        return breakMinutes;
+    }
+    
+    public void setBreakMinutes(Integer breakMinutes) {
+        this.breakMinutes = breakMinutes;
     }
     
     public WorkLogStatus getStatus() {

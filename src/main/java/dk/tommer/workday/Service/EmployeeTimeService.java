@@ -41,6 +41,17 @@ public class EmployeeTimeService {
         return sickLeaveRepository.findByUser_IdOrderByStartDateDesc(userId);
     }
 
+    public List<SickLeave> getAllSickLeavesForEmployees() {
+        // Get all sick leaves for users with SVEND or LÆRLING role
+        return sickLeaveRepository.findAll().stream()
+                .filter(sickLeave -> {
+                    Role role = sickLeave.getUser().getRole();
+                    return role == Role.SVEND || role == Role.LÆRLING;
+                })
+                .sorted((a, b) -> b.getStartDate().compareTo(a.getStartDate()))
+                .toList();
+    }
+
     @Transactional
     public void deleteSickLeave(Long id, Long userId) {
         SickLeave sickLeave = sickLeaveRepository.findById(id)

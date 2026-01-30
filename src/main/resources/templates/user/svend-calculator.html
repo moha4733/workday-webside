@@ -23,8 +23,20 @@
       <li><a th:href="@{/svend/projects}">Projekter</a></li>
       <li><a th:href="@{/svend/calculator}" class="active">Beregner</a></li>
       <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+      <li><a th:href="@{/svend/worklogs}">Mine timer</a></li>
+      <li><a th:href="@{/svend/time/sick-leave}">Sygemelding</a></li>
+      <li><a th:href="@{/svend/time/vacation}">Ferieønsker</a></li>
+      <li><a th:href="@{/svend/time/travel}">Kørseltillæg</a></li>
+      <li><a th:href="@{/svend/time/lunch}">Frokostpause</a></li>
       <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
-      <li><a th:href="@{/logout}" class="logout">Log ud</a></li>
+      <li>
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+          <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button type="submit" class="logout"
+            style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log
+            ud</button>
+        </form>
+      </li>
     </ul>
   </nav>
 

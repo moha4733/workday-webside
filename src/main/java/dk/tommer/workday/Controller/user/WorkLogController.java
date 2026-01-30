@@ -50,7 +50,8 @@ public class WorkLogController {
     @PostMapping
     public String addWorkLog(@RequestParam Long projectId,
                            @RequestParam LocalDate date,
-                           @RequestParam Double hours) {
+                           @RequestParam Double hours,
+                           @RequestParam(required = false) Integer breakMinutes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         User user = userRepository.findByEmail(email).orElseThrow();
@@ -62,6 +63,9 @@ public class WorkLogController {
         workLog.setProject(project);
         workLog.setDate(date);
         workLog.setHours(hours);
+        if (breakMinutes != null && breakMinutes > 0) {
+            workLog.setBreakMinutes(breakMinutes);
+        }
         workLog.setStatus(WorkLogStatus.PENDING); // New logs are always pending
         
         workLogRepository.save(workLog);

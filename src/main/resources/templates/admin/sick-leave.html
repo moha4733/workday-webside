@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Sygemeldinger | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/admin/dashboard}"><span></span>Oversigt</a></li>
+        <li><a th:href="@{/admin/projects}"><span></span>Projekter</a></li>
+        <li><a th:href="@{/admin/employees}"><span></span>Medarbejdere</a></li>
+        <li><a th:href="@{/admin/orders}"><span></span>Bestillinger</a></li>
+        <li><a th:href="@{/admin/worklogs}"><span></span>Timer</a></li>
+        <li><a th:href="@{/admin/vacation}"><span></span>Ferieønsker</a></li>
+        <li><a href="#" class="active"><span></span>Sygemeldinger</a></li>
+        <li><a th:href="@{/admin/settings}"><span></span>Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout" style="background: none; border: none; color: #ff7675; cursor: pointer; padding: 14px 16px; text-align: left; width: 100%; font-size: 16px; display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;"><span>🚪</span>Log ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>Sygemeldinger</h1>
+        </div>
+        <div th:replace="~{components/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+        </div>
+      </header>
+
+      <section class="table-section">
+        <h2>Filtrer sygemeldinger</h2>
+        <form th:action="@{/admin/sick-leave}" method="get" style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+          <div>
+            <label for="userId">Medarbejder:</label>
+            <select id="userId" name="userId" style="padding: 8px; margin-left: 5px;">
+              <option value="">Alle</option>
+              <option th:each="employee : ${allEmployees}" 
+                      th:value="${employee.id}" 
+                      th:text="${employee.name}"
+                      th:selected="${selectedUserId != null && selectedUserId == employee.id}"></option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Filtrer</button>
+          <a th:href="@{/admin/sick-leave}" class="btn-small">Nulstil</a>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <h2>Alle sygemeldinger</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Medarbejder</th>
+              <th>Rolle</th>
+              <th>Fra dato</th>
+              <th>Til dato</th>
+              <th>Antal dage</th>
+              <th>Kommentar</th>
+              <th>Oprettet</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${sickLeaves.isEmpty()}">
+              <td colspan="7" style="text-align: center; padding: 20px;">Ingen sygemeldinger fundet</td>
+            </tr>
+            <tr th:each="sickLeave : ${sickLeaves}">
+              <td th:text="${sickLeave.user.name}"></td>
+              <td>
+                <span th:text="${#strings.replace(sickLeave.user.role.name(), '_', ' ')}"></span>
+              </td>
+              <td th:text="${sickLeave.startDate}"></td>
+              <td th:text="${sickLeave.endDate}"></td>
+              <td>
+                <span th:text="${sickLeave.startDate.until(sickLeave.endDate).getDays() + 1}"></span>
+              </td>
+              <td th:text="${sickLeave.comment ?: 'Ingen'}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
+              <td th:text="${#temporals.format(sickLeave.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
