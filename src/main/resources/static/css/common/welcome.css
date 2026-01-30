@@ -18,77 +18,157 @@ body {
 /* Welcome Card Container */
 .welcome-container {
     background-color: #ffffff;
-    padding: 50px 40px;
+    padding: 56px 48px;
     border-radius: 12px;
     width: 100%;
-    max-width: 450px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-    border-top: 8px solid #8b5e3c;
+    max-width: 480px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-top: 6px solid #8b5e3c;
     text-align: center;
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Headline */
 h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #2d3436;
+    font-size: 34px;
+    margin-bottom: 16px;
+    color: #1a1a1a;
     font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 p {
-    color: #636e72;
-    margin-bottom: 30px;
+    color: #6b7280;
+    margin-bottom: 40px;
     font-size: 16px;
+    line-height: 1.6;
 }
 
 /* Button group */
 .button-group {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
 /* Buttons (links styled som knapper) */
 .button-group a {
-    display: inline-block;
-    background-color: #8b5e3c;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8b5e3c 0%, #a67c52 100%);
     color: #ffffff;
-    padding: 14px 20px;
+    padding: 14px 28px;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(139, 94, 60, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.button-group a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: left 0.3s ease;
 }
 
 /* Hover effect */
 .button-group a:hover {
-    background-color: #724a2f;
+    background: linear-gradient(135deg, #6d4629 0%, #8b5e3c 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(139, 94, 60, 0.35);
 }
 
-/* En sekundær knap-stil (f.eks. til "Log ud") */
+.button-group a:hover::before {
+    left: 100%;
+}
+
+.button-group a:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(139, 94, 60, 0.25);
+}
+
+/* Sekundær knap-stil */
 .button-group a.secondary {
-    background-color: transparent;
+    background: transparent;
     color: #8b5e3c;
     border: 2px solid #8b5e3c;
     box-shadow: none;
 }
 
 .button-group a.secondary:hover {
-    background-color: #fdfbf7;
-    color: #724a2f;
-    border-color: #724a2f;
+    background: rgba(139, 94, 60, 0.08);
+    color: #6d4629;
+    border-color: #6d4629;
+    box-shadow: 0 4px 12px rgba(139, 94, 60, 0.15);
 }
 
-/* Mobil optimering */
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    .welcome-container {
+        padding: 48px 36px;
+    }
+
+    h1 {
+        font-size: 30px;
+        margin-bottom: 14px;
+    }
+
+    p {
+        font-size: 15px;
+        margin-bottom: 36px;
+    }
+
+    .button-group {
+        gap: 10px;
+    }
+
+    .button-group a {
+        padding: 13px 24px;
+        font-size: 15px;
+    }
+}
+
 @media (max-width: 480px) {
     .welcome-container {
-        padding: 40px 20px;
+        padding: 40px 28px;
+        border-radius: 10px;
     }
-    h1 { font-size: 26px; }
+
+    h1 {
+        font-size: 26px;
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-size: 14px;
+        margin-bottom: 32px;
+    }
+
+    .button-group a {
+        padding: 12px 20px;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
 }
