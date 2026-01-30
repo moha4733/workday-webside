@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Sygemelding | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+        <li><a th:href="@{/svend/projects}">Projekter</a></li>
+        <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+        <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+        <li><a th:href="@{/svend/worklogs}">Mine timer</a></li>
+        <li><a href="#" class="active">Sygemelding</a></li>
+        <li><a th:href="@{/svend/time/vacation}">Ferieønsker</a></li>
+        <li><a th:href="@{/svend/time/travel}">Kørseltillæg</a></li>
+        <li><a th:href="@{/svend/time/lunch}">Frokostpause</a></li>
+        <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <header>
+        <h1>Sygemelding</h1>
+      </header>
+
+      <div th:if="${success}" class="success-message" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p th:text="${success}"></p>
+      </div>
+
+      <div th:if="${error}" class="error-message" style="background-color: #f44336; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p th:text="${error}"></p>
+      </div>
+
+      <section class="table-section">
+        <h2>Registrer sygemelding</h2>
+        <form th:action="@{/svend/time/sick-leave}" method="post" style="max-width: 600px;">
+          <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div style="margin-bottom: 15px;">
+            <label for="startDate">Fra dato:</label>
+            <input type="date" id="startDate" name="startDate" required style="width: 100%; padding: 8px; margin-top: 5px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="endDate">Til dato:</label>
+            <input type="date" id="endDate" name="endDate" required style="width: 100%; padding: 8px; margin-top: 5px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="comment">Kommentar (valgfri):</label>
+            <textarea id="comment" name="comment" rows="3" style="width: 100%; padding: 8px; margin-top: 5px;"></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Registrer sygemelding</button>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <h2>Mine sygemeldinger</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Fra dato</th>
+              <th>Til dato</th>
+              <th>Kommentar</th>
+              <th>Oprettet</th>
+              <th>Handling</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${sickLeaves.isEmpty()}">
+              <td colspan="5" style="text-align: center; padding: 20px;">Ingen sygemeldinger registreret</td>
+            </tr>
+            <tr th:each="sickLeave : ${sickLeaves}">
+              <td th:text="${sickLeave.startDate}"></td>
+              <td th:text="${sickLeave.endDate}"></td>
+              <td th:text="${sickLeave.comment ?: 'Ingen'}"></td>
+              <td th:text="${#temporals.format(sickLeave.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+              <td>
+                <form th:action="@{/svend/time/sick-leave/{id}/delete(id=${sickLeave.id})}" method="post" style="display: inline;">
+                  <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <button type="submit" class="btn-small" style="background-color: #f44336;" onclick="return confirm('Er du sikker på at du vil slette denne sygemelding?');">Slet</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

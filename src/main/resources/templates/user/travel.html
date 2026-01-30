@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Kørseltillæg | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/svend/dashboard}">Oversigt</a></li>
+        <li><a th:href="@{/svend/projects}">Projekter</a></li>
+        <li><a th:href="@{/svend/calculator}">Beregner</a></li>
+        <li><a th:href="@{/svend/orders}">Bestillinger</a></li>
+        <li><a th:href="@{/svend/worklogs}">Mine timer</a></li>
+        <li><a th:href="@{/svend/time/sick-leave}">Sygemelding</a></li>
+        <li><a th:href="@{/svend/time/vacation}">Ferieønsker</a></li>
+        <li><a href="#" class="active">Kørseltillæg</a></li>
+        <li><a th:href="@{/svend/time/lunch}">Frokostpause</a></li>
+        <li><a th:href="@{/svend/settings}">Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <header>
+        <h1>Kørseltillæg</h1>
+      </header>
+
+      <div th:if="${success}" class="success-message" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p th:text="${success}"></p>
+      </div>
+
+      <div th:if="${error}" class="error-message" style="background-color: #f44336; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p th:text="${error}"></p>
+      </div>
+
+      <section class="table-section">
+        <h2>Registrer kørseltillæg</h2>
+        <form th:action="@{/svend/time/travel}" method="post" style="max-width: 600px;">
+          <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div style="margin-bottom: 15px;">
+            <label for="date">Dato:</label>
+            <input type="date" id="date" name="date" required style="width: 100%; padding: 8px; margin-top: 5px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="kilometers">Kilometer (valgfri):</label>
+            <input type="number" id="kilometers" name="kilometers" step="0.01" min="0" style="width: 100%; padding: 8px; margin-top: 5px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="amount">Beløb (valgfri):</label>
+            <input type="number" id="amount" name="amount" step="0.01" min="0" style="width: 100%; padding: 8px; margin-top: 5px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="comment">Kommentar (valgfri):</label>
+            <textarea id="comment" name="comment" rows="3" style="width: 100%; padding: 8px; margin-top: 5px;"></textarea>
+          </div>
+          <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Angiv enten kilometer eller beløb</p>
+          <button type="submit" class="btn-primary">Registrer kørseltillæg</button>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <h2>Mine kørseltillæg</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Dato</th>
+              <th>Kilometer</th>
+              <th>Beløb</th>
+              <th>Kommentar</th>
+              <th>Oprettet</th>
+              <th>Handling</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${travelAllowances.isEmpty()}">
+              <td colspan="6" style="text-align: center; padding: 20px;">Ingen kørseltillæg registreret</td>
+            </tr>
+            <tr th:each="allowance : ${travelAllowances}">
+              <td th:text="${allowance.date}"></td>
+              <td th:text="${allowance.kilometers != null ? allowance.kilometers + ' km' : '-'}"></td>
+              <td th:text="${allowance.amount != null ? allowance.amount + ' kr' : '-'}"></td>
+              <td th:text="${allowance.comment ?: 'Ingen'}"></td>
+              <td th:text="${#temporals.format(allowance.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+              <td>
+                <form th:action="@{/svend/time/travel/{id}/delete(id=${allowance.id})}" method="post" style="display: inline;">
+                  <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <button type="submit" class="btn-small" style="background-color: #f44336;" onclick="return confirm('Er du sikker på at du vil slette dette kørseltillæg?');">Slet</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

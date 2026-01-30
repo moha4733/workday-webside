@@ -52,8 +52,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/welcome", "/register", "/login", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/svend/**").hasRole("SVEND")
-                        .requestMatchers("/api/svend/**", "/api/dashboard/svend").hasRole("SVEND")
+                        .requestMatchers("/svend/**").hasAnyRole("SVEND", "LÆRLING")
+                        .requestMatchers("/api/svend/**", "/api/dashboard/svend").hasAnyRole("SVEND", "LÆRLING")
                         .requestMatchers("/profile", "/profile/**").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -121,14 +121,18 @@ public class SecurityConfig {
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
                 boolean isSvend = authorities.stream()
                         .anyMatch(auth -> auth.getAuthority().equals("ROLE_SVEND"));
-                boolean isUser = authorities.stream()
-                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"));
+                boolean isLaerling = authorities.stream()
+                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_LÆRLING"));
                 
                 if (isAdmin) {
                     logger.info("Admin user logged in, redirecting to admin dashboard");
                     response.sendRedirect("/admin/dashboard");
+                } else if (isSvend || isLaerling) {
+                    // SVEND and LÆRLING go to same dashboard
+                    logger.info("User logged in, redirecting to svend dashboard page");
+                    response.sendRedirect("/svend/dashboard");
                 } else {
-                    // Default: SVEND dashboard
+                    // Default fallback
                     logger.info("User logged in, redirecting to svend dashboard page");
                     response.sendRedirect("/svend/dashboard");
                 }

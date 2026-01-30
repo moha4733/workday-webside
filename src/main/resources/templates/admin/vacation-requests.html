@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ferieønsker | Workday</title>
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/admin/dashboard}">Oversigt</a></li>
+        <li><a th:href="@{/admin/projects}">Projekter</a></li>
+        <li><a th:href="@{/admin/employees}">Medarbejdere</a></li>
+        <li><a th:href="@{/admin/orders}">Bestillinger</a></li>
+        <li><a th:href="@{/admin/worklogs}">Timer</a></li>
+        <li><a href="#" class="active">Ferieønsker</a></li>
+        <li><a th:href="@{/admin/settings}">Indstillinger</a></li>
+        <li>
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 10px 20px; text-align: left; width: 100%; font-size: 14px;">Log ud</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>Ferieønsker</h1>
+        </div>
+        <div th:replace="~{components/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+        </div>
+      </header>
+
+      <div th:if="${success}" class="success-message" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p th:text="${success}"></p>
+      </div>
+
+      <div th:if="${error}" class="error-message" style="background-color: #f44336; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p th:text="${error}"></p>
+      </div>
+
+      <section class="table-section">
+        <h2>Filtrer ferieønsker</h2>
+        <form th:action="@{/admin/vacation}" method="get" style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+          <div>
+            <label for="userId">Medarbejder:</label>
+            <select id="userId" name="userId" style="padding: 8px; margin-left: 5px;">
+              <option value="">Alle</option>
+              <option th:each="user : ${allUsers}" 
+                      th:value="${user.id}" 
+                      th:text="${user.name}"
+                      th:selected="${selectedUserId != null && selectedUserId == user.id}"></option>
+            </select>
+          </div>
+          <div>
+            <label for="status">Status:</label>
+            <select id="status" name="status" style="padding: 8px; margin-left: 5px;">
+              <option value="">Alle</option>
+              <option th:each="status : ${statuses}" 
+                      th:value="${status.name()}" 
+                      th:text="${#strings.replace(status.name(), '_', ' ')}"
+                      th:selected="${selectedStatus != null && selectedStatus == status.name()}"></option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Filtrer</button>
+          <a th:href="@{/admin/vacation}" class="btn-small">Nulstil</a>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <h2>Alle ferieønsker</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Medarbejder</th>
+              <th>Fra dato</th>
+              <th>Til dato</th>
+              <th>Status</th>
+              <th>Kommentar</th>
+              <th>Oprettet</th>
+              <th>Handlinger</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${vacationRequests.isEmpty()}">
+              <td colspan="7" style="text-align: center; padding: 20px;">Ingen ferieønsker fundet</td>
+            </tr>
+            <tr th:each="request : ${vacationRequests}">
+              <td th:text="${request.user.name}"></td>
+              <td th:text="${request.startDate}"></td>
+              <td th:text="${request.endDate}"></td>
+              <td>
+                <span class="status" 
+                      th:classappend="${request.status.name() == 'GODKENDT' ? 'finished' : 
+                                      request.status.name() == 'AFVIST' ? 'pending' : 'progress'}"
+                      th:text="${#strings.replace(request.status.name(), '_', ' ')}"></span>
+              </td>
+              <td th:text="${request.comment ?: 'Ingen'}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>
+              <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+              <td>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                  <form th:action="@{/admin/vacation/{id}/approve(id=${request.id})}" method="post" style="display: inline;">
+                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="text" name="adminComment" placeholder="Admin kommentar (valgfri)" style="padding: 5px; margin-right: 5px; width: 200px;">
+                    <button type="submit" class="btn-small" style="background-color: #4CAF50;">Godkend</button>
+                  </form>
+                  <form th:action="@{/admin/vacation/{id}/reject(id=${request.id})}" method="post" style="display: inline;">
+                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="text" name="adminComment" placeholder="Admin kommentar (valgfri)" style="padding: 5px; margin-right: 5px; width: 200px;">
+                    <button type="submit" class="btn-small" style="background-color: #f44336;">Afvis</button>
+                  </form>
+                  <form th:if="${request.status.name() != 'AFVENTER'}" 
+                        th:action="@{/admin/vacation/{id}/pending(id=${request.id})}" 
+                        method="post" style="display: inline;">
+                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn-small">Sæt til afventer</button>
+                  </form>
+                </div>
+                <div th:if="${request.adminComment}" style="margin-top: 5px; font-size: 12px; color: #666;">
+                  <strong>Admin kommentar:</strong> <span th:text="${request.adminComment}"></span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
