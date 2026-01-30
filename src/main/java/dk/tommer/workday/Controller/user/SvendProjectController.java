@@ -36,7 +36,7 @@ public class SvendProjectController {
         List<Project> myProjects = projectRepository.findByAssignedUser_Id(user.getId());
         model.addAttribute("userName", user.getName());
         model.addAttribute("myProjects", myProjects);
-        return "svend-projects";
+        return "user/svend-projects";
     }
 
     @GetMapping("/{id}/photo")
@@ -50,7 +50,7 @@ public class SvendProjectController {
         }
         model.addAttribute("userName", user.getName());
         model.addAttribute("project", project);
-        return "svend-project-photo";
+        return "user/svend-project-photo";
     }
 
     @PostMapping("/{id}/photo")
@@ -127,7 +127,7 @@ public class SvendProjectController {
         model.addAttribute("userName", user.getName());
         model.addAttribute("project", project);
         model.addAttribute("today", LocalDate.now());
-        return "svend-log-hours";
+        return "user/svend-log-hours";
     }
 
     @PostMapping("/{id}/log-hours")

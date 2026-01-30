@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Timer Administration | Workday</title>
-  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
   <style>
     .status-pending {
       background-color: #ffc107;
@@ -115,7 +115,7 @@
           <h1>Timer Administration</h1>
         </div>
         <div
-          th:replace="~{fragments/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+          th:replace="~{components/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
         </div>
       </header>
 

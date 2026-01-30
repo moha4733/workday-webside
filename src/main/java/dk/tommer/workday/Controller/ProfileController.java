@@ -37,7 +37,7 @@ public class ProfileController {
         User user = userRepository.findByEmail(email).orElseThrow();
         
         model.addAttribute("user", user);
-        return "profile-settings";
+        return "components/profile-settings";
     }
 
     @PostMapping("/photo")

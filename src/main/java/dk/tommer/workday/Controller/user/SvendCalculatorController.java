@@ -71,6 +71,6 @@ public class SvendCalculatorController {
             model.addAttribute("calcError", "Udfyld venligst alle felter med gyldige værdier for: " + type);
         }
         model.addAttribute("type", type);
-        return "svend-calculator";
+        return "user/svend-calculator";
     }
 }

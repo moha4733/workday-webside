@@ -43,7 +43,7 @@ public class AdminOrderController {
         List<MaterialOrder> all = materialOrderRepository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("pendingOrders", pending);
         model.addAttribute("allOrders", all);
-        return "admin-orders";
+        return "admin/admin-orders";
     }
 
     @PostMapping("/{id}/approve")

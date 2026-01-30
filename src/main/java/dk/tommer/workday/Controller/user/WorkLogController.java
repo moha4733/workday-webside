@@ -44,7 +44,7 @@ public class WorkLogController {
         model.addAttribute("userName", user.getName());
         model.addAttribute("profilePhotoPath", user.getProfilePhotoPath());
         
-        return "svend/worklogs";
+        return "user/worklogs";
     }
     
     @PostMapping

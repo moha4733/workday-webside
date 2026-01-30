@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Mine Timer | Workday</title>
-  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
   <style>
     .worklog-form {
       background: white;
@@ -104,7 +104,7 @@
           <h1>Mine Timer</h1>
         </div>
         <div
-          th:replace="~{fragments/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+          th:replace="~{components/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
         </div>
       </header>
 

@@ -24,14 +24,14 @@ public class EmployeeController {
     public String listEmployees(Model model) {
         List<User> employees = employeeService.getAllEmployeesWithWorkHours();
         model.addAttribute("employees", employees);
-        return "employees";
+        return "admin/employees";
     }
 
     @GetMapping("/{id}/edit-hours")
     public String showEditHoursForm(@PathVariable Long id, Model model) {
         User employee = employeeService.getEmployeeById(id);
         model.addAttribute("employee", employee);
-        return "edit-employee-hours";
+        return "admin/edit-employee-hours";
     }
 
     @PostMapping("/{id}/edit-hours")

@@ -1,41 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::content})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fejl - Workday</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .error-container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+        .error-code {
+            font-size: 72px;
+            font-weight: bold;
+            color: #dc3545;
+            margin: 0;
+        }
+        .error-title {
+            font-size: 24px;
+            color: #333;
+            margin: 20px 0;
+        }
+        .error-message {
+            font-size: 16px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .button-group {
+            margin-top: 30px;
+        }
+        .button-group a {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
-<div th:fragment="content">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center">
-                <div class="card border-danger shadow">
-                    <div class="card-header bg-danger text-white">
-                        <h3 class="mb-0">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <span th:text="${errorTitle}">Fejl</span>
-                        </h3>
-                    </div>
-                    <div class="card-body py-5">
-                        <h1 class="display-1 text-danger fw-bold" th:text="${errorCode}">Fejl</h1>
-                        <p class="lead mb-4" th:text="${errorMessage}">Der opstod en uventet fejl.</p>
-                        
-                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                            <a href="/" class="btn btn-secondary btn-lg px-4 gap-3">
-                                <i class="bi bi-house-door-fill"></i> Gå til forsiden
-                            </a>
-                            <a href="javascript:history.back()" class="btn btn-outline-danger btn-lg px-4">
-                                <i class="bi bi-arrow-left"></i> Tilbage
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-footer text-muted small">
-                        Hvis problemet fortsætter, kontakt venligst support.
-                    </div>
-                </div>
-            </div>
+    <div class="error-container">
+        <h1 class="error-code" th:text="${errorCode ?: 'Fejl'}">Fejl</h1>
+        <h2 class="error-title" th:text="${errorTitle ?: 'Der opstod en fejl'}">Der opstod en fejl</h2>
+        <p class="error-message" th:text="${errorMessage ?: 'Der opstod en uventet fejl. Prøv venligst igen.'}">
+            Der opstod en uventet fejl. Prøv venligst igen.
+        </p>
+        <div class="button-group">
+            <a href="/" class="btn-primary">Gå til forsiden</a>
+            <a href="javascript:history.back()" class="btn-secondary">Tilbage</a>
         </div>
     </div>
-</div>
 </body>
 </html>

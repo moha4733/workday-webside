@@ -18,7 +18,8 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(nullable = false)
+    private Role role = Role.SVEND;
 
     @Column(name = "work_hours", nullable = false)
     private Double workHours = 0.0;

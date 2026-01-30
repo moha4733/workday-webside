@@ -28,7 +28,7 @@ public class RegistrationController {
 
     @GetMapping("/welcome")
     public String showWelcomePage() {
-        return "welcome";
+        return "layout/welcome";
     }
 
 
@@ -36,7 +36,7 @@ public class RegistrationController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new UserRegistrationDTO());
-        return "register";
+        return "auth/register";
     }
 
     @PostMapping("/register")

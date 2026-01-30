@@ -35,12 +35,12 @@ public class HomeController {
 
     @GetMapping("/login")
     public String login(){
-        return "login";
+        return "auth/login";
     }
 
     @GetMapping("/")
     public String home(){
-        return "welcome";
+        return "layout/welcome";
     }
 
     @GetMapping("/admin/dashboard")
@@ -73,6 +73,6 @@ public class HomeController {
         model.addAttribute("totalHoursToday", (int)totalHoursToday);
         model.addAttribute("recentProjects", recentProjects);
         
-        return "admin-dashboard";
+        return "admin/admin-dashboard";
     }
 }

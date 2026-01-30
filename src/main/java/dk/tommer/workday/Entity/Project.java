@@ -38,9 +38,11 @@ public class Project {
     private LocalTime startTime;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProjectStatus status = ProjectStatus.PLANNED;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProjectPriority priority = ProjectPriority.MEDIUM;
 
     @ManyToOne

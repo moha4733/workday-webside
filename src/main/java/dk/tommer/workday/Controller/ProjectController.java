@@ -36,7 +36,7 @@ public class ProjectController {
     public String listProjects(Model model) {
         List<Project> projects = projectService.getAllProjects();
         model.addAttribute("projects", projects);
-        return "projects";
+        return "admin/projects";
     }
 
     @GetMapping("/create")
@@ -47,7 +47,7 @@ public class ProjectController {
         List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
         model.addAttribute("users", users);
         model.addAttribute("workTypes", workTypes);
-        return "create-project";
+        return "admin/create-project";
     }
 
     @PostMapping("/create")
@@ -59,7 +59,7 @@ public class ProjectController {
                                RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             modelAddFormListsForCreate(model);
-            return "create-project";
+            return "admin/create-project";
         }
         if (assignedUserId != null) {
             User user = userRepository.findById(assignedUserId)
@@ -83,7 +83,7 @@ public class ProjectController {
         List<User> users = userRepository.findAll();
         model.addAttribute("project", project);
         model.addAttribute("users", users);
-        return "assign-project";
+        return "admin/assign-project";
     }
 
     @PostMapping("/{id}/assign")
@@ -105,7 +105,7 @@ public class ProjectController {
         List<WorkType> workTypes = workTypeRepository.findAllByOrderByNameAsc();
         model.addAttribute("users", users);
         model.addAttribute("workTypes", workTypes);
-        return "edit-project";
+        return "admin/edit-project";
     }
 
     @PostMapping("/{id}/edit")
@@ -120,7 +120,7 @@ public class ProjectController {
             Project existing = projectService.getProjectById(id)
                     .orElseThrow(() -> new RuntimeException("Project not found"));
             prepareEditModel(model, existing);
-            return "edit-project";
+            return "admin/edit-project";
         }
         Project existingProject = projectService.getProjectById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found"));

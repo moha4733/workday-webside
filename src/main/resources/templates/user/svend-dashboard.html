@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Svend Dashboard | Workday</title>
-  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
 </head>
 
 <body>
@@ -35,7 +35,7 @@
           <h1>Svend Dashboard</h1>
         </div>
         <div
-          th:replace="~{fragments/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
+          th:replace="~{components/profile-section :: profile-header(userName=${userName}, profilePhotoPath=${profilePhotoPath})}">
         </div>
       </header>
 

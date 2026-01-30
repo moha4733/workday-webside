@@ -16,6 +16,7 @@ public class MaterialOrder {
     @JoinColumn(name = "project_id")
     private Project project;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MaterialStatus status = MaterialStatus.PENDING;
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

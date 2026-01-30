@@ -114,6 +114,6 @@ public class SvendDashboardController {
         }
         List<Project> myProjects = projectRepository.findByAssignedUser_Id(userId);
         model.addAttribute("myProjects", myProjects);
-        return "svend-dashboard";
+        return "user/svend-dashboard";
     }
 }

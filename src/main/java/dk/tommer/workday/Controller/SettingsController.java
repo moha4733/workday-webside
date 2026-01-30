@@ -52,7 +52,7 @@ public class SettingsController {
         model.addAttribute("user", currentUser);
         model.addAttribute("company", company);
         model.addAttribute("workTypes", workTypes);
-        return "settings";
+        return "admin/settings";
     }
 
     @PostMapping("/profile")

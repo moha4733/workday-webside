@@ -29,7 +29,7 @@ public class SvendSettingsController {
         String email = auth.getName();
         User user = userRepository.findByEmail(email).orElseThrow();
         model.addAttribute("userName", user.getName());
-        return "svend-settings";
+        return "user/svend-settings";
     }
 
     @PostMapping("/settings/change-password")

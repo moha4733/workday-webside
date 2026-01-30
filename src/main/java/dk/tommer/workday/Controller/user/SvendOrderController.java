@@ -93,6 +93,6 @@ public class SvendOrderController {
         var orders = materialOrderRepository.findTop3ByUser_IdOrderByCreatedAtDesc(user.getId());
         model.addAttribute("userName", user.getName());
         model.addAttribute("orders", orders);
-        return "svend-orders";
+        return "user/svend-orders";
     }
 }
