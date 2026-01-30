@@ -21,7 +21,7 @@ class UserTest {
         assertThat(user.getName()).isNull();
         assertThat(user.getEmail()).isNull();
         assertThat(user.getPassword()).isNull();
-        assertThat(user.getRole()).isNull();
+        assertThat(user.getRole()).isEqualTo(Role.SVEND);  // FIXED: Changed from isNull() to isEqualTo(Role.SVEND)
         assertThat(user.getWorkHours()).isEqualTo(0.0);
         assertThat(user.getProfilePhotoPath()).isNull();
     }
