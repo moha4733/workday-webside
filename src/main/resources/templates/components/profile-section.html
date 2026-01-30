@@ -23,27 +23,30 @@
         }
 
         .profile-photo {
-            width: 20px;  /* Even smaller - like many modern apps */
-            height: 20px; /* Even smaller - like many modern apps */
+            width: 40px;  /* Same size as employee list */
+            height: 40px; /* Same size as employee list */
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid #e5e5e5;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e5e5e5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: block;
+            flex-shrink: 0;
         }
 
         .profile-photo-placeholder {
-            width: 20px;  /* Even smaller - like many modern apps */
-            height: 20px; /* Even smaller - like many modern apps */
+            width: 40px;  /* Same size as employee list */
+            height: 40px; /* Same size as employee list */
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 9px; /* Further adjusted for smaller size */
+            font-size: 16px;
             font-weight: bold;
-            border: 1px solid #e5e5e5;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e5e5e5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
         }
 
         .profile-welcome-text {

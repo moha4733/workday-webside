@@ -54,6 +54,7 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; color: #3
     width: 18px;
     height: 18px;
     fill: currentColor;
+    display: block;
 }
 
 .sidebar ul li a::before {
