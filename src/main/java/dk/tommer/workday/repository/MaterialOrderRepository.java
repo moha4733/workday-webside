@@ -11,4 +11,5 @@ public interface MaterialOrderRepository extends JpaRepository<MaterialOrder, Lo
     List<MaterialOrder> findTop3ByUser_IdOrderByCreatedAtDesc(Long userId);
     List<MaterialOrder> findByStatusOrderByCreatedAtDesc(dk.tommer.workday.entity.MaterialStatus status);
     List<MaterialOrder> findAllByOrderByCreatedAtDesc();
+    List<MaterialOrder> findByProjectId(Long projectId);
 }

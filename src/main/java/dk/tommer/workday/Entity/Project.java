@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "projects")
@@ -52,6 +53,9 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "work_type_id")
     private WorkType workType;
+
+    @Column(precision = 19, scale = 2)
+    private BigDecimal budget;
 
     // Standard constructor (kræves af JPA)
     public Project() {
@@ -146,5 +150,13 @@ public class Project {
 
     public void setWorkType(WorkType workType) {
         this.workType = workType;
+    }
+
+    public BigDecimal getBudget() {
+        return budget;
+    }
+
+    public void setBudget(BigDecimal budget) {
+        this.budget = budget;
     }
 }

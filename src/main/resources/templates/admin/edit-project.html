@@ -54,6 +54,12 @@
           </div>
 
           <div class="form-group">
+            <label for="budget">Budget (DKK) *</label>
+            <input type="number" id="budget" th:field="*{budget}" step="0.01" required />
+            <div th:if="${#fields.hasErrors('budget')}" th:errors="*{budget}" class="field-error"></div>
+          </div>
+
+          <div class="form-group">
             <label for="startDate">Startdato</label>
             <input type="date" id="startDate" th:field="*{startDate}" />
           </div>

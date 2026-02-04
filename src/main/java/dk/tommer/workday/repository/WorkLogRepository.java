@@ -25,4 +25,6 @@ public interface WorkLogRepository extends JpaRepository<WorkLog, Long> {
     List<WorkLog> findByUser_IdAndStatusAndDateBetweenOrderByDateAsc(Long userId, WorkLogStatus status, LocalDate startDate, LocalDate endDate);
     
     List<WorkLog> findByStatusAndDateBetweenOrderByDateAsc(WorkLogStatus status, LocalDate startDate, LocalDate endDate);
+    
+    List<WorkLog> findByProjectId(Long projectId);
 }

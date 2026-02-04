@@ -8,6 +8,8 @@ import dk.tommer.workday.entity.WorkType;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.repository.WorkTypeRepository;
 import dk.tommer.workday.Service.ProjectService;
+import dk.tommer.workday.Service.ProjectFinanceService;
+import dk.tommer.workday.dto.BudgetDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private ProjectFinanceService projectFinanceService;
 
     @Autowired
     private UserRepository userRepository;
@@ -131,6 +136,7 @@ public class ProjectController {
         existingProject.setStartDate(project.getStartDate());
         existingProject.setStartTime(project.getStartTime());
         existingProject.setPriority(project.getPriority());
+        existingProject.setBudget(project.getBudget());
         
         if (assignedUserId != null) {
             User user = userRepository.findById(assignedUserId)
@@ -151,6 +157,14 @@ public class ProjectController {
         projectService.saveProject(existingProject);
         redirectAttributes.addFlashAttribute("success", "Projekt opdateret succesfuldt!");
         return "redirect:/admin/projects";
+    }
+
+    @GetMapping("/{id}/budget")
+    public String showBudgetOverview(@PathVariable Long id, Model model) {
+        BudgetDTO budget = projectFinanceService.getProjectBudget(id);
+        model.addAttribute("budget", budget);
+        model.addAttribute("projectId", id);
+        return "admin/project-budget";
     }
 
     private void modelAddFormListsForCreate(Model model) {

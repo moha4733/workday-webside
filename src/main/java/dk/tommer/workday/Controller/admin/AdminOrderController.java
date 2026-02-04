@@ -3,6 +3,7 @@ package dk.tommer.workday.controller.admin;
 import dk.tommer.workday.entity.MaterialOrder;
 import dk.tommer.workday.entity.MaterialStatus;
 import dk.tommer.workday.entity.Company;
+import java.math.BigDecimal;
 import dk.tommer.workday.repository.MaterialOrderRepository;
 import dk.tommer.workday.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -47,9 +49,12 @@ public class AdminOrderController {
     }
 
     @PostMapping("/{id}/approve")
-    public String approveOrder(@PathVariable Long id) {
+    public String approveOrder(@PathVariable Long id, @RequestParam(required = false) BigDecimal totalPrice) {
         MaterialOrder order = materialOrderRepository.findById(id).orElseThrow();
         order.setStatus(MaterialStatus.APPROVED);
+        if (totalPrice != null) {
+            order.setTotalPrice(totalPrice);
+        }
         materialOrderRepository.save(order);
         return "redirect:/admin/orders";
     }

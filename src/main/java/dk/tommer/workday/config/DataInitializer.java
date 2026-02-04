@@ -30,6 +30,8 @@ import dk.tommer.workday.repository.ProjectRepository;
 import dk.tommer.workday.repository.UserRepository;
 import dk.tommer.workday.repository.WorkLogRepository;
 import dk.tommer.workday.repository.WorkTypeRepository;
+import dk.tommer.workday.repository.CompanyRepository;
+import dk.tommer.workday.entity.Company;
 
 @Component
 @Profile("!test") // Kør ikke i test-profil
@@ -56,6 +58,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private WorkTypeRepository workTypeRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @org.springframework.beans.factory.annotation.Value("${admin.email:admin@workday.dk}")
     private String adminEmail;
@@ -130,6 +135,17 @@ public class DataInitializer implements CommandLineRunner {
             // Opret test data kun hvis der ikke allerede er projekter
             if (projectRepository.count() == 0) {
                 logger.info("Creating test data for Svend...");
+                
+                // Sørg for at der er et firma til stede
+                if (companyRepository.count() == 0) {
+                    Company company = new Company();
+                    company.setCompanyName("Tommer Entreprise");
+                    company.setCvrNumber("12345678");
+                    company.setStandardHourlyRate(210.0);
+                    companyRepository.save(company);
+                    logger.info("Default company created");
+                }
+                
                 createTestData(svend);
                 logger.info("Test data created successfully");
             }

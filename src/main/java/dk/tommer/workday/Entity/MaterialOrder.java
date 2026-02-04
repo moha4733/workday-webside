@@ -1,6 +1,7 @@
 package dk.tommer.workday.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +23,9 @@ public class MaterialOrder {
     private LocalDateTime createdAt = LocalDateTime.now();
     @Column
     private String description;
+
+    @Column(name = "total_price", precision = 19, scale = 2)
+    private BigDecimal totalPrice;
     public Long getId() {
         return id;
     }
@@ -57,5 +61,13 @@ public class MaterialOrder {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }
