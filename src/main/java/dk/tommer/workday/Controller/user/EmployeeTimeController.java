@@ -167,49 +167,4 @@ public class EmployeeTimeController {
         }
         return "redirect:/svend/time/travel";
     }
-
-    // Lunch Break
-    @GetMapping("/lunch")
-    public String showLunchPage(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
-        
-        List<LunchBreak> lunchBreaks = employeeTimeService.getLunchBreaksByUser(user.getId());
-        model.addAttribute("userName", user.getName());
-        model.addAttribute("lunchBreaks", lunchBreaks);
-        return "user/lunch";
-    }
-
-    @PostMapping("/lunch")
-    public String createLunchBreak(@RequestParam LocalDate date,
-                                   @RequestParam Integer durationMinutes,
-                                   RedirectAttributes redirectAttributes) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
-        
-        try {
-            employeeTimeService.createLunchBreak(user.getId(), date, durationMinutes);
-            redirectAttributes.addFlashAttribute("success", "Frokostpause registreret!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Fejl ved registrering: " + e.getMessage());
-        }
-        return "redirect:/svend/time/lunch";
-    }
-
-    @PostMapping("/lunch/{id}/delete")
-    public String deleteLunchBreak(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
-        
-        try {
-            employeeTimeService.deleteLunchBreak(id, user.getId());
-            redirectAttributes.addFlashAttribute("success", "Frokostpause slettet!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Fejl ved sletning: " + e.getMessage());
-        }
-        return "redirect:/svend/time/lunch";
-    }
 }

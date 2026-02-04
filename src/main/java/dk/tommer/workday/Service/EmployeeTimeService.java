@@ -22,9 +22,6 @@ public class EmployeeTimeService {
     private TravelAllowanceRepository travelAllowanceRepository;
 
     @Autowired
-    private LunchBreakRepository lunchBreakRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     // Sick Leave methods
@@ -133,35 +130,5 @@ public class EmployeeTimeService {
         }
         
         travelAllowanceRepository.delete(allowance);
-    }
-
-    // Lunch Break methods
-    @Transactional
-    public LunchBreak createLunchBreak(Long userId, LocalDate date, Integer durationMinutes) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        // Check if lunch break already exists for this date
-        lunchBreakRepository.findByUser_IdAndDate(userId, date)
-                .ifPresent(existing -> lunchBreakRepository.delete(existing));
-        
-        LunchBreak lunchBreak = new LunchBreak(user, date, durationMinutes);
-        return lunchBreakRepository.save(lunchBreak);
-    }
-
-    public List<LunchBreak> getLunchBreaksByUser(Long userId) {
-        return lunchBreakRepository.findByUser_IdOrderByDateDesc(userId);
-    }
-
-    @Transactional
-    public void deleteLunchBreak(Long id, Long userId) {
-        LunchBreak lunchBreak = lunchBreakRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lunch break not found"));
-        
-        if (!lunchBreak.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Not authorized to delete this lunch break");
-        }
-        
-        lunchBreakRepository.delete(lunchBreak);
     }
 }
