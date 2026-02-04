@@ -2,65 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <style>
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .profile-photo-container {
-            display: inline-block;
-        }
-
-        .profile-photo-container.clickable {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .profile-photo-container.clickable:hover {
-            transform: scale(1.05);
-        }
-
-        .profile-photo {
-            width: 40px;  /* Same size as employee list */
-            height: 40px; /* Same size as employee list */
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #e5e5e5;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: block;
-            flex-shrink: 0;
-        }
-
-        .profile-photo-placeholder {
-            width: 40px;  /* Same size as employee list */
-            height: 40px; /* Same size as employee list */
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: 2px solid #e5e5e5;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            flex-shrink: 0;
-        }
-
-        .profile-welcome-text {
-            color: #333;
-            font-size: 14px;
-            line-height: 1.3;
-        }
-
-        .profile-welcome-text strong {
-            display: block;
-            font-size: 15px;
-            color: #000;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/common/profile-section.css}">
 </head>
 
 <body>
@@ -68,13 +10,10 @@
     <div th:fragment="profile-header" class="profile-header">
         <!-- Clickable profile photo that links to the profile page -->
         <a th:href="@{/profile}" class="profile-photo-container clickable">
-            <img th:if="${profilePhotoPath != null}" 
-                 th:src="@{'/uploads/profiles/' + ${profilePhotoPath}}" 
-                 alt="Profilbillede" 
-                 class="profile-photo">
-            <div th:unless="${profilePhotoPath != null}" 
-                 class="profile-photo-placeholder"
-                 th:text="${userName != null ? userName.substring(0,1).toUpperCase() : 'U'}">
+            <img th:if="${profilePhotoPath != null}" th:src="@{'/uploads/profiles/' + ${profilePhotoPath}}"
+                alt="Profilbillede" class="profile-photo">
+            <div th:unless="${profilePhotoPath != null}" class="profile-photo-placeholder"
+                th:text="${userName != null ? userName.substring(0,1).toUpperCase() : 'U'}">
             </div>
         </a>
 

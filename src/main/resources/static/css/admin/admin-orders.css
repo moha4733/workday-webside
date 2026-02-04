@@ -1,0 +1,12 @@
+.empty-table-cell {
+    text-align: center;
+    padding: 20px;
+}
+
+.btn-secondary {
+    background-color: #795548 !important;
+}
+
+.btn-secondary:hover {
+    background-color: #5d4037 !important;
+}

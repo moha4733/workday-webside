@@ -1,223 +1,169 @@
 <!DOCTYPE html>
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <title>Indstillinger | Workday</title>
   <link rel="stylesheet" th:href="@{/css/admin/admin.css}">
-  <style>
-    .settings-container {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    .settings-section {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    .settings-section h2 {
-      color: #8b5e3c;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #f0f0f0;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: #333;
-    }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    .form-group textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .work-types-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .work-type-item {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .work-type-item strong {
-      color: #8b5e3c;
-    }
-    .work-type-item form {
-      display: inline;
-    }
-    .alert {
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-    }
-    .alert-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .alert-error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/admin/settings.css}">
 </head>
+
 <body>
-<div class="dashboard-wrapper">
-  <nav class="sidebar">
-    <h2>Workday</h2>
-    <ul>
-      <li><a th:href="@{/admin/dashboard}"><span><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>Oversigt</a></li>
-      <li><a th:href="@{/admin/projects}"><span><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></span>Projekter</a></li>
-      <li><a th:href="@{/admin/employees}"><span><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>Medarbejdere</a></li>
-      <li><a th:href="@{/admin/orders}"><span><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></span>Bestillinger</a></li>
-      <li><a th:href="@{/admin/worklogs}"><span><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg></span>Timer</a></li>
-      <li><a th:href="@{/admin/vacation}"><span><svg viewBox="0 0 24 24"><path d="M12.5 6.9c1.78 0 3.22 1.44 3.22 3.22 0 1.78-1.44 3.22-3.22 3.22-1.78 0-3.22-1.44-3.22-3.22 0-1.78 1.44-3.22 3.22-3.22m0-1.9C9.79 5 7.5 7.29 7.5 10.12c0 2.83 2.29 5.12 5 5.12s5-2.29 5-5.12C17.5 7.29 15.21 5 12.5 5zm-5.5 6.5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm11 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-5.5 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/></svg></span>Ferieønsker</a></li>
-      <li><a th:href="@{/admin/sick-leave}"><span><svg viewBox="0 0 24 24"><path d="M19.36 2.72L20.78 4.14l-1.06 1.06L18.3 3.78l-1.42 1.42-1.06-1.06 1.42-1.42-1.42-1.42 1.06-1.06 1.42 1.42zm-4.24 0L14.9 1.3l-1.06 1.06 1.42 1.42-1.42 1.42 1.06 1.06 1.42-1.42 1.42 1.42 1.06-1.06-1.42-1.42zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg></span>Sygemeldinger</a></li>
-      <li><a href="#" class="active"><span><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>Indstillinger</a></li>
-      <li><a th:href="@{/logout}" class="logout"><span></span>Log ud</a></li>
-    </ul>
-  </nav>
+  <div class="dashboard-wrapper">
+    <nav class="sidebar">
+      <h2>Workday</h2>
+      <ul>
+        <li><a th:href="@{/admin/dashboard}"><span><svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+              </svg></span>Oversigt</a></li>
+        <li><a th:href="@{/admin/projects}"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+              </svg></span>Projekter</a></li>
+        <li><a th:href="@{/admin/employees}"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+              </svg></span>Medarbejdere</a></li>
+        <li><a th:href="@{/admin/orders}"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+              </svg></span>Bestillinger</a></li>
+        <li><a th:href="@{/admin/worklogs}"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+              </svg></span>Timer</a></li>
+        <li><a th:href="@{/admin/vacation}"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M12.5 6.9c1.78 0 3.22 1.44 3.22 3.22 0 1.78-1.44 3.22-3.22 3.22-1.78 0-3.22-1.44-3.22-3.22 0-1.78 1.44-3.22 3.22-3.22m0-1.9C9.79 5 7.5 7.29 7.5 10.12c0 2.83 2.29 5.12 5 5.12s5-2.29 5-5.12C17.5 7.29 15.21 5 12.5 5zm-5.5 6.5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm11 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-5.5 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z" />
+              </svg></span>Ferieønsker</a></li>
+        <li><a th:href="@{/admin/sick-leave}"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M19.36 2.72L20.78 4.14l-1.06 1.06L18.3 3.78l-1.42 1.42-1.06-1.06 1.42-1.42-1.42-1.42 1.06-1.06 1.42 1.42zm-4.24 0L14.9 1.3l-1.06 1.06 1.42 1.42-1.42 1.42 1.06 1.06 1.42-1.42 1.42 1.42 1.06-1.06-1.42-1.42zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+              </svg></span>Sygemeldinger</a></li>
+        <li><a href="#" class="active"><span><svg viewBox="0 0 24 24">
+                <path
+                  d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+              </svg></span>Indstillinger</a></li>
+        <li><a th:href="@{/logout}" class="logout"><span></span>Log ud</a></li>
+      </ul>
+    </nav>
 
-  <main class="main-content">
-    <header>
-      <h1>Indstillinger</h1>
-    </header>
+    <main class="main-content">
+      <header>
+        <h1>Indstillinger</h1>
+      </header>
 
-    <div th:if="${success}" class="alert alert-success">
-      <p th:text="${success}"></p>
-    </div>
-    <div th:if="${error}" class="alert alert-error">
-      <p th:text="${error}"></p>
-    </div>
+      <div th:if="${success}" class="alert alert-success">
+        <p th:text="${success}"></p>
+      </div>
+      <div th:if="${error}" class="alert alert-error">
+        <p th:text="${error}"></p>
+      </div>
 
-    <div class="settings-container">
-      <!-- Brugerprofil -->
-      <section class="settings-section">
-        <h2>Brugerprofil</h2>
-        <form th:action="@{/admin/settings/profile}" method="post">
-          <div class="form-group">
-            <label for="name">Navn</label>
-            <input type="text" id="name" name="name" th:value="${user.name}" required/>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" th:value="${user.email}" required/>
-          </div>
-          <div class="btn-group">
-            <button type="submit" class="btn-primary">Gem ændringer</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- Sikkerhed -->
-      <section class="settings-section">
-        <h2>Sikkerhed</h2>
-        <form th:action="@{/admin/settings/change-password}" method="post">
-          <div class="form-group">
-            <label for="oldPassword">Gammelt password</label>
-            <input type="password" id="oldPassword" name="oldPassword" required/>
-          </div>
-          <div class="form-group">
-            <label for="newPassword">Nyt password</label>
-            <input type="password" id="newPassword" name="newPassword" required minlength="6"/>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Bekræft nyt password</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6"/>
-          </div>
-          <div class="btn-group">
-            <button type="submit" class="btn-primary">Skift password</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- Virksomhedsinfo -->
-      <section class="settings-section">
-        <h2>Virksomhedsinfo</h2>
-        <form th:action="@{/admin/settings/company}" method="post">
-          <div class="form-group">
-            <label for="companyName">Virksomhedsnavn</label>
-            <input type="text" id="companyName" name="companyName" th:value="${company.companyName}"/>
-          </div>
-          <div class="form-group">
-            <label for="cvrNumber">CVR-nummer</label>
-            <input type="text" id="cvrNumber" name="cvrNumber" th:value="${company.cvrNumber}"/>
-          </div>
-          <div class="form-group">
-            <label for="standardHourlyRate">Standard timetakst (kr/time)</label>
-            <input type="number" id="standardHourlyRate" name="standardHourlyRate" 
-                   th:value="${company.standardHourlyRate}" step="0.01" min="0"/>
-          </div>
-          <div class="btn-group">
-            <button type="submit" class="btn-primary">Gem virksomhedsinfo</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- Projekt-indstillinger -->
-      <section class="settings-section">
-        <h2>Projekt-indstillinger</h2>
-        <h3 style="margin-bottom: 15px; color: #636e72; font-size: 16px;">Arbejdstyper</h3>
-        
-        <form th:action="@{/admin/settings/work-types/add}" method="post" style="margin-bottom: 20px;">
-          <div class="form-group">
-            <label for="workTypeName">Tilføj ny arbejdstype</label>
-            <input type="text" id="workTypeName" name="name" placeholder="F.eks. Tag, Gulv, Køkken" required/>
-          </div>
-          <div class="form-group">
-            <label for="workTypeDescription">Beskrivelse (valgfrit)</label>
-            <textarea id="workTypeDescription" name="description" placeholder="Beskrivelse af arbejdstypen..."></textarea>
-          </div>
-          <div class="btn-group">
-            <button type="submit" class="btn-primary">Tilføj arbejdstype</button>
-          </div>
-        </form>
-
-        <div th:if="${workTypes.isEmpty()}" style="padding: 20px; text-align: center; color: #636e72;">
-          Ingen arbejdstyper endnu. Tilføj din første arbejdstype ovenfor.
-        </div>
-
-        <div class="work-types-list" th:if="${!workTypes.isEmpty()}">
-          <div class="work-type-item" th:each="workType : ${workTypes}">
-            <div>
-              <strong th:text="${workType.name}"></strong>
-              <p th:if="${workType.description}" th:text="${workType.description}" 
-                 style="margin: 5px 0 0 0; color: #636e72; font-size: 12px;"></p>
+      <div class="settings-container">
+        <!-- Brugerprofil -->
+        <section class="settings-section">
+          <h2>Brugerprofil</h2>
+          <form th:action="@{/admin/settings/profile}" method="post">
+            <div class="form-group">
+              <label for="name">Navn</label>
+              <input type="text" id="name" name="name" th:value="${user.name}" required />
             </div>
-            <form th:action="@{/admin/settings/work-types/{id}/delete(id=${workType.id})}" method="post">
-              <button type="submit" class="btn-small" style="background-color: #f44336;"
-                      onclick="return confirm('Er du sikker på at du vil slette denne arbejdstype?')">Slet</button>
-            </form>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" th:value="${user.email}" required />
+            </div>
+            <div class="btn-group">
+              <button type="submit" class="btn-primary">Gem ændringer</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Sikkerhed -->
+        <section class="settings-section">
+          <h2>Sikkerhed</h2>
+          <form th:action="@{/admin/settings/change-password}" method="post">
+            <div class="form-group">
+              <label for="oldPassword">Gammelt password</label>
+              <input type="password" id="oldPassword" name="oldPassword" required />
+            </div>
+            <div class="form-group">
+              <label for="newPassword">Nyt password</label>
+              <input type="password" id="newPassword" name="newPassword" required minlength="6" />
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Bekræft nyt password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6" />
+            </div>
+            <div class="btn-group">
+              <button type="submit" class="btn-primary">Skift password</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Virksomhedsinfo -->
+        <section class="settings-section">
+          <h2>Virksomhedsinfo</h2>
+          <form th:action="@{/admin/settings/company}" method="post">
+            <div class="form-group">
+              <label for="companyName">Virksomhedsnavn</label>
+              <input type="text" id="companyName" name="companyName" th:value="${company.companyName}" />
+            </div>
+            <div class="form-group">
+              <label for="cvrNumber">CVR-nummer</label>
+              <input type="text" id="cvrNumber" name="cvrNumber" th:value="${company.cvrNumber}" />
+            </div>
+            <div class="form-group">
+              <label for="standardHourlyRate">Standard timetakst (kr/time)</label>
+              <input type="number" id="standardHourlyRate" name="standardHourlyRate"
+                th:value="${company.standardHourlyRate}" step="0.01" min="0" />
+            </div>
+            <div class="btn-group">
+              <button type="submit" class="btn-primary">Gem virksomhedsinfo</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Projekt-indstillinger -->
+        <section class="settings-section">
+          <h2>Projekt-indstillinger</h2>
+          <h3>Arbejdstyper</h3>
+
+          <form th:action="@{/admin/settings/work-types/add}" method="post" class="add-work-type-form">
+            <div class="form-group">
+              <label for="workTypeName">Tilføj ny arbejdstype</label>
+              <input type="text" id="workTypeName" name="name" placeholder="F.eks. Tag, Gulv, Køkken" required />
+            </div>
+            <div class="form-group">
+              <label for="workTypeDescription">Beskrivelse (valgfrit)</label>
+              <textarea id="workTypeDescription" name="description"
+                placeholder="Beskrivelse af arbejdstypen..."></textarea>
+            </div>
+            <div class="btn-group">
+              <button type="submit" class="btn-primary">Tilføj arbejdstype</button>
+            </div>
+          </form>
+
+          <div th:if="${workTypes.isEmpty()}" class="empty-work-types">
+            Ingen arbejdstyper endnu. Tilføj din første arbejdstype ovenfor.
           </div>
-        </div>
-      </section>
-    </div>
-  </main>
-</div>
+
+          <div class="work-types-list" th:if="${!workTypes.isEmpty()}">
+            <div class="work-type-item" th:each="workType : ${workTypes}">
+              <div>
+                <strong th:text="${workType.name}"></strong>
+                <p th:if="${workType.description}" th:text="${workType.description}" class="work-type-description"></p>
+              </div>
+              <form th:action="@{/admin/settings/work-types/{id}/delete(id=${workType.id})}" method="post">
+                <button type="submit" class="btn-small btn-delete"
+                  onclick="return confirm('Er du sikker på at du vil slette denne arbejdstype?')">Slet</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
 </body>
+
 </html>

@@ -1,0 +1,72 @@
+.status-pending {
+  background-color: #ffc107;
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-approved {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-rejected {
+  background-color: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.comment {
+  font-size: 12px;
+  color: #666;
+  max-width: 200px;
+}
+
+.reject-form {
+  display: none;
+  margin-top: 10px;
+}
+
+.reject-form textarea {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.reject-form button {
+  margin-top: 5px;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+/* Note: .btn-small and other button styles are already in admin.css,
+   but these specific overrides were in the HTML. 
+   I will include only the ones that differ or are specific to worklogs. */
+
+.btn-approve {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-reject {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-pending {
+  background-color: #ffc107;
+  color: black;
+}

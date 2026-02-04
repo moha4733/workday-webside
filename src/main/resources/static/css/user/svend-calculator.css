@@ -1,0 +1,87 @@
+.calc-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.calc-grid label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    color: #333;
+}
+
+.calc-grid input,
+.calc-grid select {
+    margin-top: 6px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+.result-table th,
+.result-table td {
+    border: 1px solid #eee;
+    padding: 10px;
+    text-align: left;
+}
+
+.error {
+    background: #f44336;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+/* Specific items for svend-calculator */
+
+.logout-form {
+    margin: 0;
+}
+
+.btn-logout {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    padding: 10px 20px;
+    text-align: left;
+    width: 100%;
+    font-size: 14px;
+}
+
+.project-info {
+    margin-bottom: 10px;
+}
+
+.project-address {
+    color: #666;
+}
+
+.btn-container {
+    margin-top: 12px;
+}
+
+.hidden-fields {
+    display: none;
+}
+
+.order-form {
+    margin-top: 12px;
+}
