@@ -8,7 +8,13 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.stream.Collectors;
+import dk.tommer.workday.dto.AccountingStatsDTO;
 
 @Service
 public class ProjectFinanceService {
@@ -68,7 +74,9 @@ public class ProjectFinanceService {
         }
 
         return new BudgetDTO(
+                project.getId(),
                 project.getName(),
+                project.getStatus(),
                 budget,
                 materialCost,
                 laborCost,
@@ -76,5 +84,73 @@ public class ProjectFinanceService {
                 remainingBalance,
                 spentPercentage
         );
+    }
+
+    public List<BudgetDTO> getAllProjectBudgets() {
+        return projectRepository.findAll().stream()
+                .map(p -> getProjectBudget(p.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public AccountingStatsDTO getAccountingStats() {
+        LocalDate now = LocalDate.now();
+        
+        // Month stats
+        LocalDate startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
+        AccountingStatsDTO.PeriodStats monthStats = calculatePeriodStats(startOfMonth, endOfMonth);
+        
+        // Quarter stats
+        int currentMonth = now.getMonthValue();
+        int startMonthOfQuarter = ((currentMonth - 1) / 3) * 3 + 1;
+        LocalDate startOfQuarter = LocalDate.of(now.getYear(), startMonthOfQuarter, 1);
+        LocalDate endOfQuarter = startOfQuarter.plusMonths(3).minusDays(1);
+        AccountingStatsDTO.PeriodStats quarterStats = calculatePeriodStats(startOfQuarter, endOfQuarter);
+        
+        // Year stats
+        LocalDate startOfYear = now.with(TemporalAdjusters.firstDayOfYear());
+        LocalDate endOfYear = now.with(TemporalAdjusters.lastDayOfYear());
+        AccountingStatsDTO.PeriodStats yearStats = calculatePeriodStats(startOfYear, endOfYear);
+        
+        return new AccountingStatsDTO(monthStats, quarterStats, yearStats);
+    }
+
+    private AccountingStatsDTO.PeriodStats calculatePeriodStats(LocalDate startDir, LocalDate endDir) {
+        LocalDateTime start = startDir.atStartOfDay();
+        LocalDateTime end = endDir.atTime(LocalTime.MAX);
+        
+        // Use standard rate
+        Double hourlyRate = companyRepository.findFirstByOrderByIdAsc()
+                .map(Company::getStandardHourlyRate)
+                .filter(rate -> rate != null)
+                .orElse(0.0);
+
+        // 1. Costs from Material Orders
+        List<MaterialOrder> orders = materialOrderRepository.findByStatusAndCreatedAtBetween(MaterialStatus.APPROVED, start, end);
+        BigDecimal materialCost = orders.stream()
+                .map(o -> o.getTotalPrice() != null ? o.getTotalPrice() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 2. Costs from Work Logs
+        List<WorkLog> workLogs = workLogRepository.findByStatusAndDateBetweenOrderByDateAsc(WorkLogStatus.APPROVED, startDir, endDir);
+        Double totalHours = workLogs.stream()
+                .mapToDouble(WorkLog::getHours)
+                .sum();
+        BigDecimal laborCost = BigDecimal.valueOf(totalHours * hourlyRate).setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal totalCosts = materialCost.add(laborCost);
+        
+        // For "Earnings", we'll sum the budgets of projects that STARTED in this period
+        List<Project> projectsStarted = projectRepository.findAll().stream()
+                .filter(p -> p.getStartDate() != null && !p.getStartDate().isBefore(startDir) && !p.getStartDate().isAfter(endDir))
+                .collect(Collectors.toList());
+        
+        BigDecimal totalEarnings = projectsStarted.stream()
+                .map(p -> p.getBudget() != null ? p.getBudget() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        BigDecimal profit = totalEarnings.subtract(totalCosts);
+        
+        return new AccountingStatsDTO.PeriodStats(totalEarnings, totalCosts, profit, projectsStarted.size());
     }
 }

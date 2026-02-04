@@ -1,9 +1,12 @@
 package dk.tommer.workday.dto;
 
 import java.math.BigDecimal;
+import dk.tommer.workday.entity.ProjectStatus;
 
 public class BudgetDTO {
+    private Long projectId;
     private String projectName;
+    private ProjectStatus projectStatus;
     private BigDecimal totalBudget;
     private BigDecimal materialCost;
     private BigDecimal laborCost;
@@ -11,8 +14,10 @@ public class BudgetDTO {
     private BigDecimal remainingBalance;
     private double spentPercentage;
 
-    public BudgetDTO(String projectName, BigDecimal totalBudget, BigDecimal materialCost, BigDecimal laborCost, BigDecimal totalSpent, BigDecimal remainingBalance, double spentPercentage) {
+    public BudgetDTO(Long projectId, String projectName, ProjectStatus projectStatus, BigDecimal totalBudget, BigDecimal materialCost, BigDecimal laborCost, BigDecimal totalSpent, BigDecimal remainingBalance, double spentPercentage) {
+        this.projectId = projectId;
         this.projectName = projectName;
+        this.projectStatus = projectStatus;
         this.totalBudget = totalBudget != null ? totalBudget : BigDecimal.ZERO;
         this.materialCost = materialCost;
         this.laborCost = laborCost;
@@ -22,8 +27,14 @@ public class BudgetDTO {
     }
 
     // Getters and Setters
+    public Long getProjectId() { return projectId; }
+    public void setProjectId(Long projectId) { this.projectId = projectId; }
+
     public String getProjectName() { return projectName; }
     public void setProjectName(String projectName) { this.projectName = projectName; }
+
+    public ProjectStatus getProjectStatus() { return projectStatus; }
+    public void setProjectStatus(ProjectStatus projectStatus) { this.projectStatus = projectStatus; }
 
     public BigDecimal getTotalBudget() { return totalBudget; }
     public void setTotalBudget(BigDecimal totalBudget) { this.totalBudget = totalBudget; }

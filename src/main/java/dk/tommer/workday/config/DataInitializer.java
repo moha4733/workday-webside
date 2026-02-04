@@ -3,6 +3,7 @@ package dk.tommer.workday.config;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -186,6 +187,7 @@ public class DataInitializer implements CommandLineRunner {
         project1.setPriority(ProjectPriority.HIGH);
         project1.setAssignedUser(svend);
         project1.setWorkType(renovation);
+        project1.setBudget(BigDecimal.valueOf(75000));
         project1 = projectRepository.save(project1);
 
         Project project2 = new Project();
@@ -198,6 +200,7 @@ public class DataInitializer implements CommandLineRunner {
         project2.setPriority(ProjectPriority.MEDIUM);
         project2.setAssignedUser(svend);
         project2.setWorkType(renovation);
+        project2.setBudget(BigDecimal.valueOf(50000));
         project2 = projectRepository.save(project2);
 
         Project project3 = new Project();
@@ -210,6 +213,7 @@ public class DataInitializer implements CommandLineRunner {
         project3.setPriority(ProjectPriority.LOW);
         project3.setAssignedUser(svend);
         project3.setWorkType(maintenance);
+        project3.setBudget(BigDecimal.valueOf(45000));
         project3 = projectRepository.save(project3);
 
         // Opret bestillinger
