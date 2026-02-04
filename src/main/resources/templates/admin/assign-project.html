@@ -17,7 +17,15 @@
         <li><a th:href="@{/admin/projects}" class="active"><span></span>Projekter</a></li>
         <li><a th:href="@{/admin/employees}"><span></span>Medarbejdere</a></li>
         <li><a th:href="@{/admin/settings}"><span></span>Indstillinger</a></li>
-        <li><a th:href="@{/logout}" class="logout"><span></span>Log ud</a></li>
+        <li class="logout-item">
+          <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout-button"><span><svg viewBox="0 0 24 24">
+                  <path
+                    d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                </svg></span>Log ud</button>
+          </form>
+        </li>
       </ul>
     </nav>
 
